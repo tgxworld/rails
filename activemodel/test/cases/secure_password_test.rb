@@ -18,8 +18,6 @@ class SecurePasswordTest < ActiveModel::TestCase
     if BCrypt::Engine.cost != BCrypt::Engine::DEFAULT_COST
       BCrypt::Engine.cost = nil
     end
-
-    ActiveModel::SecurePassword.min_cost = false
   end
 
   test "create and updating without validations" do
@@ -176,8 +174,6 @@ class SecurePasswordTest < ActiveModel::TestCase
   end
 
   test "Password digest cost can be set to bcrypt min cost to speed up tests" do
-    ActiveModel::SecurePassword.min_cost = true
-
     @user.password = "secret"
     assert_equal BCrypt::Engine::MIN_COST, @user.password_digest.cost
   end
