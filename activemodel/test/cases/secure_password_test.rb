@@ -15,6 +15,10 @@ class SecurePasswordTest < ActiveModel::TestCase
   end
 
   teardown do
+    if BCrypt::Engine.cost != BCrypt::Engine::DEFAULT_COST
+      BCrypt::Engine.cost = nil
+    end
+
     ActiveModel::SecurePassword.min_cost = false
   end
 
@@ -147,7 +151,7 @@ class SecurePasswordTest < ActiveModel::TestCase
   test "setting a nil password should clear an existing password" do
     @existing_user.password = nil
     assert_equal nil, @existing_user.password_digest
-  end  
+  end
 
   test "authenticate" do
     @user.password = "secret"
