@@ -263,6 +263,12 @@ module ActionDispatch
 
         # Performs the actual request.
         def process(method, path, parameters = nil, headers_or_env = nil)
+          routes = ActionDispatch::Routing::RouteSet.new
+
+          routes.draw do
+            get ':controller(/:action(/:id))'
+          end
+
           if path =~ %r{://}
             location = URI.parse(path)
             https! URI::HTTPS === location if location.scheme
