@@ -149,7 +149,7 @@ module ActionDispatch
         def get_routes_as_head(routes)
           precedence = (routes.map(&:precedence).max || 0) + 1
           routes = routes.select { |r|
-            r.verb === "GET" && !(r.verb === "HEAD")
+            r.verb === "GET" || !(r.verb === "HEAD")
           }.map! { |r|
             Route.new(r.name,
                       r.app,
