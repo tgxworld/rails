@@ -4,9 +4,7 @@ require 'abstract_unit'
 module ActionDispatch
   module Journey
     class TestRouter < ActiveSupport::TestCase
-      attr_reader :routes
-
-      def setup
+      setup do
         @app       = Routing::RouteSet::Dispatcher.new({})
         @routes    = Routes.new
         @router    = Router.new(@routes)
@@ -30,33 +28,29 @@ module ActionDispatch
       end
 
       def test_dashes
-        router = Router.new(routes)
-
         exp = Router::Strexp.build '/foo-bar-baz', {}, ['/.?']
         path  = Path::Pattern.new exp
 
-        routes.add_route nil, path, {}, {:id => nil}, {}
+        @routes.add_route nil, path, {}, {:id => nil}, {}
 
         env = rails_env 'PATH_INFO' => '/foo-bar-baz'
         called = false
-        router.recognize(env) do |r, params|
+        @router.recognize(env) do |r, params|
           called = true
         end
         assert called
       end
 
       def test_unicode
-        router = Router.new(routes)
-
         #match the escaped version of /ほげ
         exp = Router::Strexp.build '/%E3%81%BB%E3%81%92', {}, ['/.?']
         path  = Path::Pattern.new exp
 
-        routes.add_route nil, path, {}, {:id => nil}, {}
+        @routes.add_route nil, path, {}, {:id => nil}, {}
 
         env = rails_env 'PATH_INFO' => '/%E3%81%BB%E3%81%92'
         called = false
-        router.recognize(env) do |r, params|
+        @router.recognize(env) do |r, params|
           called = true
         end
         assert called
@@ -64,17 +58,15 @@ module ActionDispatch
 
       def test_request_class_and_requirements_success
         klass  = FakeRequestFeeler.new nil
-        router = Router.new(routes)
-
         requirements = { :hello => /world/ }
 
         exp = Router::Strexp.build '/foo(/:id)', {}, ['/.?']
         path  = Path::Pattern.new exp
 
-        routes.add_route nil, path, requirements, {:id => nil}, {}
+        @routes.add_route nil, path, requirements, {:id => nil}, {}
 
         env = rails_env({'PATH_INFO' => '/foo/10'}, klass)
-        router.recognize(env) do |r, params|
+        @router.recognize(env) do |r, params|
           assert_equal({:id => '10'}, params)
         end
 
@@ -84,17 +76,15 @@ module ActionDispatch
 
       def test_request_class_and_requirements_fail
         klass  = FakeRequestFeeler.new nil
-        router = Router.new(routes)
-
         requirements = { :hello => /mom/ }
 
         exp = Router::Strexp.build '/foo(/:id)', {}, ['/.?']
         path  = Path::Pattern.new exp
 
-        router.routes.add_route nil, path, requirements, {:id => nil}, {}
+        @routes.add_route nil, path, requirements, {:id => nil}, {}
 
         env = rails_env({'PATH_INFO' => '/foo/10'}, klass)
-        router.recognize(env) do |r, params|
+        @router.recognize(env) do |r, params|
           flunk 'route should not be found'
         end
 
@@ -113,18 +103,16 @@ module ActionDispatch
       end
 
       def test_request_class_overrides_path_info
-        router = Router.new(routes)
-
         exp = Router::Strexp.build '/bar', {}, ['/.?']
         path = Path::Pattern.new exp
 
-        routes.add_route nil, path, {}, {}, {}
+        @routes.add_route nil, path, {}, {}, {}
 
         env = rails_env({'PATH_INFO' => '/foo',
                          'custom.path_info' => '/bar'}, CustomPathRequest)
 
         recognized = false
-        router.recognize(env) do |r, params|
+        @router.recognize(env) do |r, params|
           recognized = true
         end
 
