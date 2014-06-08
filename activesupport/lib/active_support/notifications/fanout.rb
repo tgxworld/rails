@@ -11,16 +11,24 @@ module ActiveSupport
       include Mutex_m
 
       def initialize
-        @subscribers = []
         @listeners_for = ThreadSafe::Cache.new
+        @all_listeners = ThreadSafe::Array.new
+        @regex_listeners = ThreadSafe::Array.new
         super
       end
 
       def subscribe(pattern = nil, block = Proc.new)
         subscriber = Subscribers.new pattern, block
         synchronize do
-          @subscribers << subscriber
-          @listeners_for.clear
+          case pattern
+          when String
+            @listeners_for[pattern] ||= []
+            @listeners_for[pattern] << subscriber
+          when Regexp
+            @regex_listeners << subscriber
+          else
+            @all_listeners << subscriber
+          end
         end
         subscriber
       end
@@ -29,12 +37,12 @@ module ActiveSupport
         synchronize do
           case subscriber_or_name
           when String
-            @subscribers.reject! { |s| s.matches?(subscriber_or_name) }
-          else
-            @subscribers.delete(subscriber_or_name)
+            @listeners_for[subscriber_or_name].clear
+          when Subscribers::Evented, Subscribers::Timed
+            @listeners_for[subscriber_or_name.pattern].delete(subscriber_or_name)
+          when Subscribers::AllMessages
+            @all_listeners.delete(subscriber_or_name)
           end
-
-          @listeners_for.clear
         end
       end
 
@@ -51,10 +59,14 @@ module ActiveSupport
       end
 
       def listeners_for(name)
-        # this is correctly done double-checked locking (ThreadSafe::Cache's lookups have volatile semantics)
-        @listeners_for[name] || synchronize do
-          # use synchronisation when accessing @subscribers
-          @listeners_for[name] ||= @subscribers.select { |s| s.subscribed_to?(name) }
+        synchronize do
+          @regex_listeners.select! { |x| x.matches?(name) }
+
+          if @listeners_for[name].nil?
+            @all_listeners + @regex_listeners
+          else
+            @listeners_for[name] + @all_listeners + @regex_listeners
+          end
         end
       end
 
@@ -82,6 +94,8 @@ module ActiveSupport
         end
 
         class Evented #:nodoc:
+          attr_reader :pattern
+
           def initialize(pattern, delegate)
             @pattern = pattern
             @delegate = delegate
@@ -112,6 +126,8 @@ module ActiveSupport
         end
 
         class Timed < Evented
+          attr_reader :pattern
+
           def publish(name, *args)
             @delegate.call name, *args
           end
