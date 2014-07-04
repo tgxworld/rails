@@ -1,3 +1,11 @@
+*   Avoid duplicating routes for HEAD requests.
+
+    Instead of duplicating the routes, we will first match the HEAD request to
+    HEAD routes. If no match is found, we will then map the HEAD request to
+    GET routes.
+
+    *Guo Xiang Tan*, *Andrew White*
+
 *   Generate shallow paths for all children of shallow resources.
 
     Fixes #15783.
