@@ -361,7 +361,9 @@ module ActionDispatch
       def copy_session_variables! #:nodoc:
         return unless integration_session
         %w(controller response request).each do |var|
-          instance_variable_set("@#{var}", @integration_session.__send__(var))
+          if variable = @integration_session.__send__(var)
+            instance_variable_set("@#{var}",variable)
+          end
         end
       end
 

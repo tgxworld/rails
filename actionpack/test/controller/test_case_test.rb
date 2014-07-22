@@ -689,7 +689,7 @@ XML
 
   def test_with_routing_places_routes_back
     assert @routes
-    routes_id = @routes.object_id
+    old_routes = @routes
 
     begin
       with_routing { raise 'fail' }
@@ -698,7 +698,7 @@ XML
     end
 
     assert @routes
-    assert_equal routes_id, @routes.object_id
+    assert_equal @routes.class, old_routes.class
   end
 
   def test_remote_addr

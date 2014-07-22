@@ -188,13 +188,36 @@ class ActionDispatch::IntegrationTest < ActiveSupport::TestCase
   end
 
   def with_routing(&block)
-    temporary_routes = ActionDispatch::Routing::RouteSet.new
-    old_app, self.class.app = self.class.app, self.class.build_app(temporary_routes)
+    @routes = ActionDispatch::Routing::RouteSet.new
+    old_app, self.class.app = self.class.app, self.class.build_app(@routes)
     old_routes = SharedTestRoutes
-    silence_warnings { Object.const_set(:SharedTestRoutes, temporary_routes) }
+    silence_warnings { Object.const_set(:SharedTestRoutes, @routes) }
 
-    yield temporary_routes
+    # ActionController::TestCase is now a subclass of ActionDispatch::IntegrationTest.
+    # Hence, we need to include this to ensure that the url_helpers are available
+    # in the controllers for functional tests as well.
+    if defined?(@controller) && @controller
+      old_controller, @controller = @controller, @controller.clone
+      _routes = @routes
+
+      # Unfortunately, there is currently an abstraction leak between AC::Base
+      # and AV::Base which requires having the URL helpers in both AC and AV.
+      # To do this safely at runtime for tests, we need to bump up the helper serial
+      # to that the old AV subclass isn't cached.
+      #
+      # TODO: Make this unnecessary
+      @controller.singleton_class.send(:include, _routes.url_helpers)
+      @controller.view_context_class = Class.new(@controller.view_context_class) do
+        include _routes.url_helpers
+      end
+    end
+
+    yield @routes
   ensure
+    if defined?(@controller) && @controller
+      @controller = old_controller
+    end
+
     self.class.app = old_app
     silence_warnings { Object.const_set(:SharedTestRoutes, old_routes) }
   end
