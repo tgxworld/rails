@@ -19,13 +19,13 @@ class AssertSelectTest < ActionController::TestCase
   class AssertSelectMailer < ActionMailer::Base
     def test(html)
       mail :body => html, :content_type => "text/html",
-        :subject => "Test e-mail", :from => "test@test.host", :to => "test <test@test.host>"
+        :subject => "Test e-mail", :from => "test@www.example.com", :to => "test <test@www.example.com>"
     end
   end
 
   class AssertMultipartSelectMailer < ActionMailer::Base
     def test(options)
-      mail :subject => "Test e-mail", :from => "test@test.host", :to => "test <test@test.host>" do |format|
+      mail :subject => "Test e-mail", :from => "test@www.example.com", :to => "test <test@www.example.com>" do |format|
         format.text { render :text => options[:text] }
         format.html { render :text => options[:html] }
       end

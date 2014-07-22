@@ -703,7 +703,7 @@ XML
 
   def test_remote_addr
     get :test_remote_addr
-    assert_equal "0.0.0.0", @response.body
+    assert_equal "127.0.0.1", @response.body
 
     @request.remote_addr = "192.0.0.1"
     get :test_remote_addr
@@ -947,8 +947,8 @@ class NamedRoutesControllerTest < ActionController::TestCase
   def test_should_be_able_to_use_named_routes_before_a_request_is_done
     with_routing do |set|
       set.draw { resources :contents }
-      assert_equal 'http://test.host/contents/new', new_content_url
-      assert_equal 'http://test.host/contents/1', content_url(:id => 1)
+      assert_equal 'http://www.example.com/contents/new', new_content_url
+      assert_equal 'http://www.example.com/contents/1', content_url(:id => 1)
     end
   end
 end

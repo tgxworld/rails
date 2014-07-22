@@ -720,7 +720,7 @@ class FilterTest < ActionController::TestCase
   def test_before_action_redirects_breaks_actioning_chain_for_after_action
     test_process(BeforeActionRedirectionController)
     assert_response :redirect
-    assert_equal "http://test.host/filter_test/before_action_redirection/target_of_redirection", redirect_to_url
+    assert_equal "http://www.example.com/filter_test/before_action_redirection/target_of_redirection", redirect_to_url
     assert_equal %w( before_action_redirects ), assigns["ran_filter"]
   end
 
@@ -733,7 +733,7 @@ class FilterTest < ActionController::TestCase
   def test_before_action_redirects_breaks_actioning_chain_for_preprend_after_action
     test_process(BeforeActionRedirectionForPrependAfterActionController)
     assert_response :redirect
-    assert_equal "http://test.host/filter_test/before_action_redirection_for_prepend_after_action/target_of_redirection", redirect_to_url
+    assert_equal "http://www.example.com/filter_test/before_action_redirection_for_prepend_after_action/target_of_redirection", redirect_to_url
     assert_equal %w( before_action_redirects ), assigns["ran_filter"]
   end
 

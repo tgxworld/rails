@@ -55,16 +55,16 @@ class RoutingAssertionsTest < ActionController::TestCase
 
   def test_assert_recognizes_with_hash_constraint
     assert_raise(Assertion) do
-      assert_recognizes({ :controller => 'secure_articles', :action => 'index' }, 'http://test.host/secure/articles')
+      assert_recognizes({ :controller => 'secure_articles', :action => 'index' }, 'http://www.example.com/secure/articles')
     end
-    assert_recognizes({ :controller => 'secure_articles', :action => 'index', :protocol => 'https://' }, 'https://test.host/secure/articles')
+    assert_recognizes({ :controller => 'secure_articles', :action => 'index', :protocol => 'https://' }, 'https://www.example.com/secure/articles')
   end
 
   def test_assert_recognizes_with_block_constraint
     assert_raise(Assertion) do
-      assert_recognizes({ :controller => 'block_articles', :action => 'index' }, 'http://test.host/block/articles')
+      assert_recognizes({ :controller => 'block_articles', :action => 'index' }, 'http://www.example.com/block/articles')
     end
-    assert_recognizes({ :controller => 'block_articles', :action => 'index' }, 'https://test.host/block/articles')
+    assert_recognizes({ :controller => 'block_articles', :action => 'index' }, 'https://www.example.com/block/articles')
   end
 
   def test_assert_recognizes_with_query_constraint
@@ -88,16 +88,16 @@ class RoutingAssertionsTest < ActionController::TestCase
 
   def test_assert_routing_with_hash_constraint
     assert_raise(Assertion) do
-      assert_routing('http://test.host/secure/articles', { :controller => 'secure_articles', :action => 'index' })
+      assert_routing('http://www.example.com/secure/articles', { :controller => 'secure_articles', :action => 'index' })
     end
-    assert_routing('https://test.host/secure/articles', { :controller => 'secure_articles', :action => 'index', :protocol => 'https://' })
+    assert_routing('https://www.example.com/secure/articles', { :controller => 'secure_articles', :action => 'index', :protocol => 'https://' })
   end
 
   def test_assert_routing_with_block_constraint
     assert_raise(Assertion) do
-      assert_routing('http://test.host/block/articles', { :controller => 'block_articles', :action => 'index' })
+      assert_routing('http://www.example.com/block/articles', { :controller => 'block_articles', :action => 'index' })
     end
-    assert_routing('https://test.host/block/articles', { :controller => 'block_articles', :action => 'index' })
+    assert_routing('https://www.example.com/block/articles', { :controller => 'block_articles', :action => 'index' })
   end
 
   def test_with_routing

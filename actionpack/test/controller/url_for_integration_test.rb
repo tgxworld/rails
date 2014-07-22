@@ -174,7 +174,7 @@ module ActionPack
         hash[:only_path] = true
 
         define_method("test_#{url.gsub(/\W/, '_')}_#{i}") do
-          get URI('http://test.host' + route.to_s)
+          get URI('http://www.example.com' + route.to_s)
           assert_equal path_params, controller.request.path_parameters
           assert_equal url, controller.url_for(hash), params.inspect
         end

@@ -96,19 +96,19 @@ class ForceSSLControllerLevelTest < ActionController::TestCase
   def test_banana_redirects_to_https
     get :banana
     assert_response 301
-    assert_equal "https://test.host/force_ssl_controller_level/banana", redirect_to_url
+    assert_equal "https://www.example.com/force_ssl_controller_level/banana", redirect_to_url
   end
 
   def test_banana_redirects_to_https_with_extra_params
     get :banana, :token => "secret"
     assert_response 301
-    assert_equal "https://test.host/force_ssl_controller_level/banana?token=secret", redirect_to_url
+    assert_equal "https://www.example.com/force_ssl_controller_level/banana?token=secret", redirect_to_url
   end
 
   def test_cheeseburger_redirects_to_https
     get :cheeseburger
     assert_response 301
-    assert_equal "https://test.host/force_ssl_controller_level/cheeseburger", redirect_to_url
+    assert_equal "https://www.example.com/force_ssl_controller_level/cheeseburger", redirect_to_url
   end
 end
 
@@ -193,7 +193,7 @@ class ForceSSLOnlyActionTest < ActionController::TestCase
   def test_cheeseburger_redirects_to_https
     get :cheeseburger
     assert_response 301
-    assert_equal "https://test.host/force_ssl_only_action/cheeseburger", redirect_to_url
+    assert_equal "https://www.example.com/force_ssl_only_action/cheeseburger", redirect_to_url
   end
 end
 
@@ -206,7 +206,7 @@ class ForceSSLExceptActionTest < ActionController::TestCase
   def test_cheeseburger_redirects_to_https
     get :cheeseburger
     assert_response 301
-    assert_equal "https://test.host/force_ssl_except_action/cheeseburger", redirect_to_url
+    assert_equal "https://www.example.com/force_ssl_except_action/cheeseburger", redirect_to_url
   end
 end
 
@@ -219,7 +219,7 @@ class ForceSSLIfConditionTest < ActionController::TestCase
   def test_cheeseburger_redirects_to_https
     get :cheeseburger
     assert_response 301
-    assert_equal "https://test.host/force_ssl_if_condition/cheeseburger", redirect_to_url
+    assert_equal "https://www.example.com/force_ssl_if_condition/cheeseburger", redirect_to_url
   end
 end
 
@@ -227,14 +227,14 @@ class ForceSSLFlashTest < ActionController::TestCase
   def test_cheeseburger_redirects_to_https
     get :set_flash
     assert_response 302
-    assert_equal "http://test.host/force_ssl_flash/cheeseburger", redirect_to_url
+    assert_equal "http://www.example.com/force_ssl_flash/cheeseburger", redirect_to_url
 
     # FIXME: AC::TestCase#build_request_uri doesn't build a new uri if PATH_INFO exists
     @request.env.delete('PATH_INFO')
 
     get :cheeseburger
     assert_response 301
-    assert_equal "https://test.host/force_ssl_flash/cheeseburger", redirect_to_url
+    assert_equal "https://www.example.com/force_ssl_flash/cheeseburger", redirect_to_url
 
     # FIXME: AC::TestCase#build_request_uri doesn't build a new uri if PATH_INFO exists
     @request.env.delete('PATH_INFO')
@@ -259,7 +259,7 @@ class ForceSSLDuplicateRoutesTest < ActionController::TestCase
 
       get :banana
       assert_response 301
-      assert_equal 'https://test.host/bar', redirect_to_url
+      assert_equal 'https://www.example.com/bar', redirect_to_url
     end
   end
 end
@@ -275,7 +275,7 @@ class ForceSSLFormatTest < ActionController::TestCase
 
       get :banana, :format => :json
       assert_response 301
-      assert_equal 'https://test.host/foo.json', redirect_to_url
+      assert_equal 'https://www.example.com/foo.json', redirect_to_url
     end
   end
 end
@@ -297,7 +297,7 @@ class ForceSSLOptionalSegmentsTest < ActionController::TestCase
       get :banana, :locale => 'en'
       assert_equal 'en',  @controller.params[:locale]
       assert_response 301
-      assert_equal 'https://test.host/en/foo', redirect_to_url
+      assert_equal 'https://www.example.com/en/foo', redirect_to_url
     end
   end
 end
@@ -306,7 +306,7 @@ class RedirectToSSLTest < ActionController::TestCase
   def test_banana_redirects_to_https_if_not_https
     get :banana
     assert_response 301
-    assert_equal "https://test.host/redirect_to_ssl/banana", redirect_to_url
+    assert_equal "https://www.example.com/redirect_to_ssl/banana", redirect_to_url
   end
 
   def test_cheeseburgers_redirects_to_https_with_new_host_if_not_https

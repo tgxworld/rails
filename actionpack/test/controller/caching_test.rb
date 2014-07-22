@@ -60,7 +60,7 @@ class FragmentCachingTest < ActionController::TestCase
 
   def test_fragment_cache_key
     assert_equal 'views/what a key', @controller.fragment_cache_key('what a key')
-    assert_equal "views/test.host/fragment_caching_test/some_action",
+    assert_equal "views/www.example.com/fragment_caching_test/some_action",
                   @controller.fragment_cache_key(:controller => 'fragment_caching_test',:action => 'some_action')
   end
 
@@ -197,7 +197,7 @@ CACHED
     assert_equal expected_body, @response.body
 
     assert_equal "This bit's fragment cached",
-      @store.read("views/test.host/functional_caching/fragment_cached/#{template_digest("functional_caching/fragment_cached")}")
+      @store.read("views/www.example.com/functional_caching/fragment_cached/#{template_digest("functional_caching/fragment_cached")}")
   end
 
   def test_fragment_caching_in_partials
@@ -206,7 +206,7 @@ CACHED
     assert_match(/Old fragment caching in a partial/, @response.body)
 
     assert_match("Old fragment caching in a partial",
-      @store.read("views/test.host/functional_caching/html_fragment_cached_with_partial/#{template_digest("functional_caching/_partial")}"))
+      @store.read("views/www.example.com/functional_caching/html_fragment_cached_with_partial/#{template_digest("functional_caching/_partial")}"))
   end
 
   def test_skipping_fragment_cache_digesting
@@ -224,7 +224,7 @@ CACHED
     assert_match(/Some inline content/, @response.body)
     assert_match(/Some cached content/, @response.body)
     assert_match("Some cached content",
-      @store.read("views/test.host/functional_caching/inline_fragment_cached/#{template_digest("functional_caching/inline_fragment_cached")}"))
+      @store.read("views/www.example.com/functional_caching/inline_fragment_cached/#{template_digest("functional_caching/inline_fragment_cached")}"))
   end
 
   def test_fragment_cache_instrumentation
@@ -251,7 +251,7 @@ CACHED
     assert_equal expected_body, @response.body
 
     assert_equal "<p>ERB</p>",
-      @store.read("views/test.host/functional_caching/formatted_fragment_cached/#{template_digest("functional_caching/formatted_fragment_cached")}")
+      @store.read("views/www.example.com/functional_caching/formatted_fragment_cached/#{template_digest("functional_caching/formatted_fragment_cached")}")
   end
 
   def test_xml_formatted_fragment_caching
@@ -262,7 +262,7 @@ CACHED
     assert_equal expected_body, @response.body
 
     assert_equal "  <p>Builder</p>\n",
-      @store.read("views/test.host/functional_caching/formatted_fragment_cached/#{template_digest("functional_caching/formatted_fragment_cached")}")
+      @store.read("views/www.example.com/functional_caching/formatted_fragment_cached/#{template_digest("functional_caching/formatted_fragment_cached")}")
   end
 
 
@@ -276,7 +276,7 @@ CACHED
     assert_equal expected_body, @response.body
 
     assert_equal "<p>PHONE</p>",
-      @store.read("views/test.host/functional_caching/formatted_fragment_cached_with_variant/#{template_digest("functional_caching/formatted_fragment_cached_with_variant")}")
+      @store.read("views/www.example.com/functional_caching/formatted_fragment_cached_with_variant/#{template_digest("functional_caching/formatted_fragment_cached_with_variant")}")
   end
 
   private

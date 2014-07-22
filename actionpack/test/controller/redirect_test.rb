@@ -46,7 +46,7 @@ class RedirectController < ActionController::Base
   end
 
   def host_redirect
-    redirect_to :action => "other_host", :only_path => false, :host => 'other.test.host'
+    redirect_to :action => "other_host", :only_path => false, :host => 'other.www.example.com'
   end
 
   def module_redirect
@@ -129,43 +129,43 @@ class RedirectTest < ActionController::TestCase
   def test_simple_redirect
     get :simple_redirect
     assert_response :redirect
-    assert_equal "http://test.host/redirect/hello_world", redirect_to_url
+    assert_equal "http://www.example.com/redirect/hello_world", redirect_to_url
   end
 
   def test_redirect_with_header_break
     get :redirect_with_header_break
     assert_response :redirect
-    assert_equal "http://test.host/lolwat", redirect_to_url
+    assert_equal "http://www.example.com/lolwat", redirect_to_url
   end
 
   def test_redirect_with_null_bytes
     get :redirect_with_null_bytes
     assert_response :redirect
-    assert_equal "http://test.host/lolwat", redirect_to_url
+    assert_equal "http://www.example.com/lolwat", redirect_to_url
   end
 
   def test_redirect_with_no_status
     get :simple_redirect
     assert_response 302
-    assert_equal "http://test.host/redirect/hello_world", redirect_to_url
+    assert_equal "http://www.example.com/redirect/hello_world", redirect_to_url
   end
 
   def test_redirect_with_status
     get :redirect_with_status
     assert_response 301
-    assert_equal "http://test.host/redirect/hello_world", redirect_to_url
+    assert_equal "http://www.example.com/redirect/hello_world", redirect_to_url
   end
 
   def test_redirect_with_status_hash
     get :redirect_with_status_hash
     assert_response 301
-    assert_equal "http://test.host/redirect/hello_world", redirect_to_url
+    assert_equal "http://www.example.com/redirect/hello_world", redirect_to_url
   end
 
   def test_redirect_with_protocol
     get :redirect_with_protocol
     assert_response 302
-    assert_equal "https://test.host/redirect/hello_world", redirect_to_url
+    assert_equal "https://www.example.com/redirect/hello_world", redirect_to_url
   end
 
   def test_url_redirect_with_status
@@ -184,13 +184,13 @@ class RedirectTest < ActionController::TestCase
   def test_relative_url_redirect_with_status
     get :relative_url_redirect_with_status
     assert_response 302
-    assert_equal "http://test.host/things/stuff", redirect_to_url
+    assert_equal "http://www.example.com/things/stuff", redirect_to_url
   end
 
   def test_relative_url_redirect_with_status_hash
     get :relative_url_redirect_with_status_hash
     assert_response 301
-    assert_equal "http://test.host/things/stuff", redirect_to_url
+    assert_equal "http://www.example.com/things/stuff", redirect_to_url
   end
 
   def test_redirect_to_back_with_status
@@ -203,13 +203,13 @@ class RedirectTest < ActionController::TestCase
   def test_simple_redirect_using_options
     get :host_redirect
     assert_response :redirect
-    assert_redirected_to :action => "other_host", :only_path => false, :host => 'other.test.host'
+    assert_redirected_to :action => "other_host", :only_path => false, :host => 'other.www.example.com'
   end
 
   def test_module_redirect
     get :module_redirect
     assert_response :redirect
-    assert_redirected_to "http://test.host/module_test/module_redirect/hello_world"
+    assert_redirected_to "http://www.example.com/module_test/module_redirect/hello_world"
   end
 
   def test_module_redirect_using_options
@@ -270,11 +270,11 @@ class RedirectTest < ActionController::TestCase
       end
 
       get :redirect_to_existing_record
-      assert_equal "http://test.host/workshops/5", redirect_to_url
+      assert_equal "http://www.example.com/workshops/5", redirect_to_url
       assert_redirected_to Workshop.new(5)
 
       get :redirect_to_new_record
-      assert_equal "http://test.host/workshops", redirect_to_url
+      assert_equal "http://www.example.com/workshops", redirect_to_url
       assert_redirected_to Workshop.new(nil)
     end
   end
@@ -312,7 +312,7 @@ class RedirectTest < ActionController::TestCase
       get :redirect_to_with_block_and_options
 
       assert_response :redirect
-      assert_redirected_to "http://test.host/redirect/hello_world"
+      assert_redirected_to "http://www.example.com/redirect/hello_world"
     end
   end
 end
@@ -330,19 +330,19 @@ module ModuleTest
     def test_simple_redirect
       get :simple_redirect
       assert_response :redirect
-      assert_equal "http://test.host/module_test/module_redirect/hello_world", redirect_to_url
+      assert_equal "http://www.example.com/module_test/module_redirect/hello_world", redirect_to_url
     end
 
     def test_simple_redirect_using_options
       get :host_redirect
       assert_response :redirect
-      assert_redirected_to :action => "other_host", :only_path => false, :host => 'other.test.host'
+      assert_redirected_to :action => "other_host", :only_path => false, :host => 'other.www.example.com'
     end
 
     def test_module_redirect
       get :module_redirect
       assert_response :redirect
-      assert_equal "http://test.host/redirect/hello_world", redirect_to_url
+      assert_equal "http://www.example.com/redirect/hello_world", redirect_to_url
     end
 
     def test_module_redirect_using_options

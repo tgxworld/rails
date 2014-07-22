@@ -217,8 +217,8 @@ module ActionView
     test "is able to use named routes" do
       with_routing do |set|
         set.draw { resources :contents }
-        assert_equal 'http://test.host/contents/new', new_content_url
-        assert_equal 'http://test.host/contents/1',   content_url(:id => 1)
+        assert_equal 'http://www.example.com/contents/new', new_content_url
+        assert_equal 'http://www.example.com/contents/1',   content_url(:id => 1)
       end
     end
 
@@ -250,7 +250,7 @@ module ActionView
           end
         end
 
-        assert_equal 'http://test.host/contents/new', render(:partial => 'test/from_helper')
+        assert_equal 'http://www.example.com/contents/new', render(:partial => 'test/from_helper')
       end
     end
 

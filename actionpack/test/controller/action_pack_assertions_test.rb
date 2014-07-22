@@ -202,10 +202,10 @@ class ActionPackAssertionsControllerTest < ActionController::TestCase
       end
       process :redirect_to_named_route
       assert_raise(ActiveSupport::TestCase::Assertion) do
-        assert_redirected_to 'http://test.host/route_two'
+        assert_redirected_to 'http://www.example.com/route_two'
       end
       assert_raise(ActiveSupport::TestCase::Assertion) do
-        assert_redirected_to %r(^http://test.host/route_two)
+        assert_redirected_to %r(^http://www.example.com/route_two)
       end
       assert_raise(ActiveSupport::TestCase::Assertion) do
         assert_redirected_to :controller => 'action_pack_assertions', :action => 'nothing', :id => 'two'
@@ -239,7 +239,7 @@ class ActionPackAssertionsControllerTest < ActionController::TestCase
         get ':controller/:action'
       end
       process :redirect_to_top_level_named_route
-      # assert_redirected_to "http://test.host/action_pack_assertions/foo" would pass because of exact match early return
+      # assert_redirected_to "http://www.example.com/action_pack_assertions/foo" would pass because of exact match early return
       assert_redirected_to "/action_pack_assertions/foo"
       assert_redirected_to %r(/action_pack_assertions/foo)
     end
@@ -320,7 +320,7 @@ class ActionPackAssertionsControllerTest < ActionController::TestCase
 
   def test_redirection_location
     process :redirect_internal
-    assert_equal 'http://test.host/nothing', @response.redirect_url
+    assert_equal 'http://www.example.com/nothing', @response.redirect_url
 
     process :redirect_external
     assert_equal 'http://www.rubyonrails.org', @response.redirect_url
@@ -414,12 +414,12 @@ class ActionPackAssertionsControllerTest < ActionController::TestCase
 
   def test_redirect_invalid_external_route
     process :redirect_invalid_external_route
-    assert_redirected_to "http://test.hostht_tp://www.rubyonrails.org"
+    assert_redirected_to "http://www.example.comht_tp://www.rubyonrails.org"
   end
 
   def test_redirected_to_url_full_url
     process :redirect_to_path
-    assert_redirected_to 'http://test.host/some/path'
+    assert_redirected_to 'http://www.example.com/some/path'
   end
 
   def test_assert_redirection_with_symbol

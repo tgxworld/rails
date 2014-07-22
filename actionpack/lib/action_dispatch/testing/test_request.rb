@@ -3,9 +3,12 @@ require 'rack/utils'
 
 module ActionDispatch
   class TestRequest < Request
+    DEFAULT_HOST = "www.example.com"
+    DEFAULT_REMOTE_ADDR = '127.0.0.1'
+
     DEFAULT_ENV = Rack::MockRequest.env_for('/',
-      'HTTP_HOST'       => 'test.host',
-      'REMOTE_ADDR'     => '0.0.0.0',
+      'HTTP_HOST'       => DEFAULT_HOST,
+      'REMOTE_ADDR'     => DEFAULT_REMOTE_ADDR,
       'HTTP_USER_AGENT' => 'Rails Testing'
     )
 

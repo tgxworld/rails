@@ -625,7 +625,7 @@ class UrlHelperControllerTest < ActionController::TestCase
 
   def test_named_route_url_shows_host_and_path
     get :show_named_route, kind: 'url'
-    assert_equal 'http://test.host/url_helper_controller_test/url_helper/show_named_route',
+    assert_equal 'http://www.example.com/url_helper_controller_test/url_helper/show_named_route',
       @response.body
   end
 
@@ -663,7 +663,7 @@ class UrlHelperControllerTest < ActionController::TestCase
   def test_recall_params_should_normalize_id
     get :show, id: '123'
     assert_equal 302, @response.status
-    assert_equal 'http://test.host/url_helper_controller_test/url_helper/profile/123', @response.location
+    assert_equal 'http://www.example.com/url_helper_controller_test/url_helper/profile/123', @response.location
 
     get :show, name: '123'
     assert_equal 'ok', @response.body

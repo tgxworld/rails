@@ -44,7 +44,7 @@ class TestJSONDecoding < ActiveSupport::TestCase
     %({"a": true})  => {"a" => true},
     %({"a": false}) => {"a" => false},
     %q({"bad":"\\\\","trailing":""}) => {"bad" => "\\", "trailing" => ""},
-    %q({"a": "http:\/\/test.host\/posts\/1"}) => {"a" => "http://test.host/posts/1"},
+    %q({"a": "http:\/\/www.example.com\/posts\/1"}) => {"a" => "http://www.example.com/posts/1"},
     %q({"a": "\u003cunicode\u0020escape\u003e"}) => {"a" => "<unicode escape>"},
     %q({"a": "\\\\u0020skip double backslashes"}) => {"a" => "\\u0020skip double backslashes"},
     %q({"a": "\u003cbr /\u003e"}) => {'a' => "<br />"},

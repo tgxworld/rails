@@ -430,7 +430,7 @@ class TestRoutingMapper < ActionDispatch::IntegrationTest
       end
     end
 
-    original_options = { :host => 'test.host' }
+    original_options = { :host => 'www.example.com' }
     options = original_options.dup
 
     profile_customer_url("customer_model", options)

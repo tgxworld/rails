@@ -63,7 +63,7 @@ class MockController
       define_method :url_options do
         options = super()
         options[:protocol] ||= "http"
-        options[:host] ||= "test.host"
+        options[:host] ||= "www.example.com"
         options.merge(additional_options)
       end
 
@@ -318,7 +318,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
 
     assert_equal '/admin/user/show/10', url_for(rs, { :controller => 'admin/user', :action => 'show', :id => 10 })
 
-    get URI('http://test.host/admin/user/list/10')
+    get URI('http://www.example.com/admin/user/list/10')
 
     assert_equal({ :controller => 'admin/user', :action => 'list', :id => '10' },
                  controller.request.path_parameters)
@@ -394,7 +394,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
     rs.draw do
       root :to => 'content#list', :as => 'home'
     end
-    assert_equal("http://test.host/", setup_for_named_route.send(:home_url))
+    assert_equal("http://www.example.com/", setup_for_named_route.send(:home_url))
   end
 
   def test_named_route_with_option
@@ -402,7 +402,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
       get 'page/:title' => 'content#show_page', :as => 'page'
     end
 
-    assert_equal("http://test.host/page/new%20stuff",
+    assert_equal("http://www.example.com/page/new%20stuff",
         setup_for_named_route.send(:page_url, :title => 'new stuff'))
   end
 
@@ -411,7 +411,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
       get 'page/:title' => 'content#show_page', :title => 'AboutPage', :as => 'page'
     end
 
-    assert_equal("http://test.host/page/AboutRails",
+    assert_equal("http://www.example.com/page/AboutRails",
         setup_for_named_route.send(:page_url, :title => "AboutRails"))
   end
 
@@ -422,7 +422,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
       end
     end
 
-    assert_equal("http://test.host/my/page",
+    assert_equal("http://www.example.com/my/page",
         setup_for_named_route.send(:page_url))
   end
 
@@ -433,7 +433,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
       end
     end
 
-    assert_equal("http://test.host/page",
+    assert_equal("http://www.example.com/page",
         setup_for_named_route.send(:page_url))
   end
 
@@ -442,7 +442,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
       get 'admin/user' => 'admin/user#index', :as => "users"
     end
 
-    assert_equal("http://test.host/admin/user",
+    assert_equal("http://www.example.com/admin/user",
         setup_for_named_route.send(:users_url))
   end
 
@@ -469,7 +469,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
       root :to => "hello#index"
     end
     routes = setup_for_named_route
-    assert_equal("http://test.host/", routes.send(:root_url))
+    assert_equal("http://www.example.com/", routes.send(:root_url))
     assert_equal("/", routes.send(:root_path))
   end
 
@@ -478,7 +478,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
       root "hello#index"
     end
     routes = setup_for_named_route
-    assert_equal("http://test.host/", routes.send(:root_url))
+    assert_equal("http://www.example.com/", routes.send(:root_url))
     assert_equal("/", routes.send(:root_path))
   end
 
@@ -488,7 +488,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
     end
 
     routes = setup_for_named_route
-    assert_equal("http://test.host/", routes.send(:index_url))
+    assert_equal("http://www.example.com/", routes.send(:index_url))
     assert_equal("/", routes.send(:index_path))
   end
 
@@ -504,8 +504,8 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
     end
 
     routes = setup_for_named_route(trailing_slash: true)
-    assert_equal("http://test.host/", routes.send(:root_url))
-    assert_equal("http://test.host/?foo=bar", routes.send(:root_url, foo: :bar))
+    assert_equal("http://www.example.com/", routes.send(:root_url))
+    assert_equal("http://www.example.com/?foo=bar", routes.send(:root_url, foo: :bar))
   end
 
   def test_named_route_with_regexps
@@ -517,14 +517,14 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
 
     routes = setup_for_named_route
 
-    assert_equal "http://test.host/page/2005/6/10/hi",
+    assert_equal "http://www.example.com/page/2005/6/10/hi",
       routes.send(:article_url, :title => 'hi', :day => 10, :year => 2005, :month => 6)
   end
 
   def test_changing_controller
     rs.draw { get ':controller/:action/:id' }
 
-    get URI('http://test.host/admin/user/index/10')
+    get URI('http://www.example.com/admin/user/index/10')
 
     assert_equal '/admin/stuff/show/10',
         controller.url_for({:controller => 'stuff', :action => 'show', :id => 10, :only_path => true})
@@ -586,7 +586,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
       get '*path' => 'content#show_file'
     end
 
-    get URI('http://test.host/pages/boo')
+    get URI('http://www.example.com/pages/boo')
     assert_equal({:controller=>"content", :action=>"show_file", :path=>"pages/boo"},
                  controller.request.path_parameters)
 
@@ -600,7 +600,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
       get ':controller(/:action(/:id))'
     end
 
-    get URI('http://test.host/pages/show')
+    get URI('http://www.example.com/pages/show')
     assert_equal '/page/20',   controller.url_for({ :id => 20, :only_path => true })
     assert_equal '/page/20',   url_for(rs, { :controller => 'pages', :id => 20, :action => 'show' })
     assert_equal '/pages/boo', url_for(rs, { :controller => 'pages', :action => 'boo' })
@@ -642,7 +642,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
 
   def test_action_expiry
     rs.draw { get ':controller(/:action(/:id))' }
-    get URI('http://test.host/content/show')
+    get URI('http://www.example.com/content/show')
     assert_equal '/content', controller.url_for(:controller => 'content', :only_path => true)
   end
 
@@ -670,7 +670,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
     assert_equal '/test', url_for(rs, { :controller => 'post', :action => 'show' })
     assert_equal '/test', url_for(rs, { :controller => 'post', :action => 'show', :year => nil })
 
-    assert_equal("http://test.host/test", setup_for_named_route.send(:blog_url))
+    assert_equal("http://www.example.com/test", setup_for_named_route.send(:blog_url))
   end
 
   def test_set_to_nil_forgets
@@ -686,7 +686,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
     assert_equal '/pages/2005/6/12',
       url_for(rs, { :controller => 'content', :action => 'list_pages', :year => 2005, :month => 6, :day => 12 })
 
-    get URI('http://test.host/pages/2005/6/12')
+    get URI('http://www.example.com/pages/2005/6/12')
     assert_equal({ :controller => 'content', :action => 'list_pages', :year => '2005', :month => '6', :day => '12' },
                 controller.request.path_parameters)
 
@@ -717,7 +717,7 @@ class LegacyRouteSetTests < ActiveSupport::TestCase
     assert_equal '/', url_for(rs, { :controller => 'content', :action => 'index' })
     assert_equal '/', url_for(rs, { :controller => 'content' })
 
-    assert_equal("http://test.host/", setup_for_named_route.send(:home_url))
+    assert_equal("http://www.example.com/", setup_for_named_route.send(:home_url))
   end
 
   def test_named_route_method
@@ -964,48 +964,48 @@ class RouteSetTest < ActiveSupport::TestCase
       get '/admin/users' => 'admin/users#index', :as => "users"
     end
 
-    get URI('http://test.host/people')
+    get URI('http://www.example.com/people')
     controller
   end
 
   def test_named_route_url_method
     controller = setup_named_route_test
 
-    assert_equal "http://test.host/people/5", controller.send(:show_url, :id => 5)
+    assert_equal "http://www.example.com/people/5", controller.send(:show_url, :id => 5)
     assert_equal "/people/5", controller.send(:show_path, :id => 5)
 
-    assert_equal "http://test.host/people", controller.send(:index_url)
+    assert_equal "http://www.example.com/people", controller.send(:index_url)
     assert_equal "/people", controller.send(:index_path)
 
-    assert_equal "http://test.host/admin/users", controller.send(:users_url)
+    assert_equal "http://www.example.com/admin/users", controller.send(:users_url)
     assert_equal '/admin/users', controller.send(:users_path)
   end
 
   def test_named_route_url_method_with_anchor
     controller = setup_named_route_test
 
-    assert_equal "http://test.host/people/5#location", controller.send(:show_url, :id => 5, :anchor => 'location')
+    assert_equal "http://www.example.com/people/5#location", controller.send(:show_url, :id => 5, :anchor => 'location')
     assert_equal "/people/5#location", controller.send(:show_path, :id => 5, :anchor => 'location')
 
-    assert_equal "http://test.host/people#location", controller.send(:index_url, :anchor => 'location')
+    assert_equal "http://www.example.com/people#location", controller.send(:index_url, :anchor => 'location')
     assert_equal "/people#location", controller.send(:index_path, :anchor => 'location')
 
-    assert_equal "http://test.host/admin/users#location", controller.send(:users_url, :anchor => 'location')
+    assert_equal "http://www.example.com/admin/users#location", controller.send(:users_url, :anchor => 'location')
     assert_equal '/admin/users#location', controller.send(:users_path, :anchor => 'location')
 
-    assert_equal "http://test.host/people/go/7/hello/joe/5#location",
+    assert_equal "http://www.example.com/people/go/7/hello/joe/5#location",
       controller.send(:multi_url, 7, "hello", 5, :anchor => 'location')
 
-    assert_equal "http://test.host/people/go/7/hello/joe/5?baz=bar#location",
+    assert_equal "http://www.example.com/people/go/7/hello/joe/5?baz=bar#location",
       controller.send(:multi_url, 7, "hello", 5, :baz => "bar", :anchor => 'location')
 
-    assert_equal "http://test.host/people?baz=bar#location",
+    assert_equal "http://www.example.com/people?baz=bar#location",
       controller.send(:index_url, :baz => "bar", :anchor => 'location')
   end
 
   def test_named_route_url_method_with_port
     controller = setup_named_route_test
-    assert_equal "http://test.host:8080/people/5", controller.send(:show_url, 5, :port=>8080)
+    assert_equal "http://www.example.com:8080/people/5", controller.send(:show_url, 5, :port=>8080)
   end
 
   def test_named_route_url_method_with_host
@@ -1015,30 +1015,30 @@ class RouteSetTest < ActiveSupport::TestCase
 
   def test_named_route_url_method_with_protocol
     controller = setup_named_route_test
-    assert_equal "https://test.host/people/5", controller.send(:show_url, 5, :protocol => "https")
+    assert_equal "https://www.example.com/people/5", controller.send(:show_url, 5, :protocol => "https")
   end
 
   def test_named_route_url_method_with_ordered_parameters
     controller = setup_named_route_test
-    assert_equal "http://test.host/people/go/7/hello/joe/5",
+    assert_equal "http://www.example.com/people/go/7/hello/joe/5",
       controller.send(:multi_url, 7, "hello", 5)
   end
 
   def test_named_route_url_method_with_ordered_parameters_and_hash
     controller = setup_named_route_test
-    assert_equal "http://test.host/people/go/7/hello/joe/5?baz=bar",
+    assert_equal "http://www.example.com/people/go/7/hello/joe/5?baz=bar",
       controller.send(:multi_url, 7, "hello", 5, :baz => "bar")
   end
 
   def test_named_route_url_method_with_ordered_parameters_and_empty_hash
     controller = setup_named_route_test
-    assert_equal "http://test.host/people/go/7/hello/joe/5",
+    assert_equal "http://www.example.com/people/go/7/hello/joe/5",
       controller.send(:multi_url, 7, "hello", 5, {})
   end
 
   def test_named_route_url_method_with_no_positional_arguments
     controller = setup_named_route_test
-    assert_equal "http://test.host/people?baz=bar",
+    assert_equal "http://www.example.com/people?baz=bar",
       controller.send(:index_url, :baz => "bar")
   end
 
@@ -1317,7 +1317,7 @@ class RouteSetTest < ActiveSupport::TestCase
       get ':controller/:id/:action'
     end
 
-    get URI('http://test.host/people/7/show')
+    get URI('http://www.example.com/people/7/show')
 
     assert_equal "/people/7/destroy", controller.url_for(:action => 'destroy', :only_path => true)
   end
@@ -1330,7 +1330,7 @@ class RouteSetTest < ActiveSupport::TestCase
       get ':controller/:action/:id'
     end
 
-    get URI('http://test.host/welcom/get/7')
+    get URI('http://www.example.com/welcom/get/7')
 
     assert_equal "/about", controller.url_for(:controller => 'welcome',
                                               :action => 'about',
@@ -1395,7 +1395,7 @@ class RouteSetTest < ActiveSupport::TestCase
       get ':controller(/:action(/:id))'
     end
 
-    get URI('http://test.host/books/show/10')
+    get URI('http://www.example.com/books/show/10')
 
     assert_equal '/books', controller.url_for(:controller => 'books',
                                               :only_path => true,
@@ -1410,7 +1410,7 @@ class RouteSetTest < ActiveSupport::TestCase
       get ':controller(/:action(/:id))'
     end
 
-    get URI('http://test.host/weblog/show/1')
+    get URI('http://www.example.com/weblog/show/1')
 
     assert_equal '/weblog/edit?parameter=1', controller.url_for(
       {:action => 'edit', :parameter => 1, :only_path => true})
@@ -1421,7 +1421,7 @@ class RouteSetTest < ActiveSupport::TestCase
       get '/posts(.:format)' => 'posts#index'
     end
 
-    get URI('http://test.host/posts.xml')
+    get URI('http://www.example.com/posts.xml')
     assert_equal({:controller => 'posts', :action => 'index', :format => 'xml'},
                  controller.request.path_parameters)
 
@@ -1437,7 +1437,7 @@ class RouteSetTest < ActiveSupport::TestCase
 
     set.draw { get 'projects/:project_id/:controller/:action' }
 
-    get URI('http://test.host/projects/1/weblog/show')
+    get URI('http://www.example.com/projects/1/weblog/show')
 
     assert_equal(
       { :controller => 'weblog', :action => 'show', :project_id => '1' },

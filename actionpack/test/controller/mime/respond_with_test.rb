@@ -39,7 +39,7 @@ class RespondWithController < ActionController::Base
   end
 
   def using_resource_with_status_and_location
-    respond_with(resource, :location => "http://test.host/", :status => :created)
+    respond_with(resource, :location => "http://www.example.com/", :status => :created)
   end
 
   def using_resource_with_json
@@ -52,7 +52,7 @@ class RespondWithController < ActionController::Base
 
   def using_options_with_template
     @customer = resource
-    respond_with(@customer, :status => 123, :location => "http://test.host/")
+    respond_with(@customer, :status => 123, :location => "http://www.example.com/")
   end
 
   def using_resource_with_responder
@@ -573,7 +573,7 @@ class RespondWithControllerTest < ActionController::TestCase
     @request.accept = "text/html"
     post :using_resource_with_status_and_location
     assert @response.redirect?
-    assert_equal "http://test.host/", @response.location
+    assert_equal "http://www.example.com/", @response.location
 
     @request.accept = "application/xml"
     get :using_resource_with_status_and_location
@@ -620,12 +620,12 @@ class RespondWithControllerTest < ActionController::TestCase
     post :using_options_with_template
     assert_equal "<customer-name>david</customer-name>", @response.body
     assert_equal 123, @response.status
-    assert_equal "http://test.host/", @response.location
+    assert_equal "http://www.example.com/", @response.location
 
     put :using_options_with_template
     assert_equal "<customer-name>david</customer-name>", @response.body
     assert_equal 123, @response.status
-    assert_equal "http://test.host/", @response.location
+    assert_equal "http://www.example.com/", @response.location
   end
 
   def test_using_resource_with_responder

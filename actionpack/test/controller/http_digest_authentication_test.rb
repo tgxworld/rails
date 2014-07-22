@@ -150,7 +150,7 @@ class HttpDigestAuthenticationTest < ActionController::TestCase
 
   test "authentication request with absolute request uri (as in webrick)" do
     @request.env['HTTP_AUTHORIZATION'] = encode_credentials(:username => 'pretty', :password => 'please')
-    @request.env["SERVER_NAME"] = "test.host"
+    @request.env["SERVER_NAME"] = "www.example.com"
     @request.env['PATH_INFO'] = "/http_digest_authentication_test/dummy_digest"
 
     get :display
@@ -161,7 +161,7 @@ class HttpDigestAuthenticationTest < ActionController::TestCase
   end
 
   test "authentication request with absolute uri in credentials (as in IE)" do
-    @request.env['HTTP_AUTHORIZATION'] = encode_credentials(:url => "http://test.host/http_digest_authentication_test/dummy_digest",
+    @request.env['HTTP_AUTHORIZATION'] = encode_credentials(:url => "http://www.example.com/http_digest_authentication_test/dummy_digest",
                                                             :username => 'pretty', :password => 'please')
 
     get :display
@@ -172,9 +172,9 @@ class HttpDigestAuthenticationTest < ActionController::TestCase
   end
 
   test "authentication request with absolute uri in both request and credentials (as in Webrick with IE)" do
-    @request.env['HTTP_AUTHORIZATION'] = encode_credentials(:url => "http://test.host/http_digest_authentication_test/dummy_digest",
+    @request.env['HTTP_AUTHORIZATION'] = encode_credentials(:url => "http://www.example.com/http_digest_authentication_test/dummy_digest",
                                                             :username => 'pretty', :password => 'please')
-    @request.env['SERVER_NAME'] = "test.host"
+    @request.env['SERVER_NAME'] = "www.example.com"
     @request.env['PATH_INFO'] = "/http_digest_authentication_test/dummy_digest"
 
     get :display
@@ -236,7 +236,7 @@ class HttpDigestAuthenticationTest < ActionController::TestCase
 
   test "authentication request with absolute uri in credentials (as in IE) ending with /" do
     @request.env['PATH_INFO'] = "/http_digest_authentication_test/dummy_digest/"
-    @request.env['HTTP_AUTHORIZATION'] = encode_credentials(:uri => "http://test.host/http_digest_authentication_test/dummy_digest/",
+    @request.env['HTTP_AUTHORIZATION'] = encode_credentials(:uri => "http://www.example.com/http_digest_authentication_test/dummy_digest/",
                                                             :username => 'pretty', :password => 'please')
 
     # simulate normalizing PATH_INFO

@@ -31,7 +31,7 @@ class PeopleHelperTest < ActionView::TestCase
 
   def test_homepage_url
     with_test_route_set do
-      assert_equal "http://test.host/people", homepage_url
+      assert_equal "http://www.example.com/people", homepage_url
     end
   end
 

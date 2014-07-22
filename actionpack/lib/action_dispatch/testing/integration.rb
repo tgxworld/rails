@@ -135,7 +135,8 @@ module ActionDispatch
     # IntegrationTest#open_session, rather than instantiating
     # Integration::Session directly.
     class Session
-      DEFAULT_HOST = "www.example.com"
+      DEFAULT_HOST = ActionDispatch::TestRequest::DEFAULT_HOST
+      DEFAULT_REMOTE_ADDR = ActionDispatch::TestRequest::DEFAULT_REMOTE_ADDR
 
       include Minitest::Assertions
       include TestProcess, RequestHelpers, Assertions
@@ -222,7 +223,7 @@ module ActionDispatch
         @url_options = nil
 
         self.host        = DEFAULT_HOST
-        self.remote_addr = "127.0.0.1"
+        self.remote_addr = DEFAULT_REMOTE_ADDR
         self.accept      = "text/xml,application/xml,application/xhtml+xml," +
                            "text/html;q=0.9,text/plain;q=0.8,image/png," +
                            "*/*;q=0.5"
