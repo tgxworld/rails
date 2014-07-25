@@ -59,6 +59,7 @@ module ActionDispatch
     autoload :ShowExceptions
     autoload :SSL
     autoload :Static
+    autoload :RackTimer
   end
 
   autoload :Journey
