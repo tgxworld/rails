@@ -579,8 +579,9 @@ module ActionController
       def process(action, http_method = 'GET', *args)
         check_required_ivars
 
+        headers_or_env = {}
         if args.first.is_a?(String) && http_method != 'HEAD'
-          @request.env['RAW_POST_DATA'] = args.shift
+          headers_or_env['RAW_POST_DATA'] = args.shift
         end
 
         parameters, session, flash = args
@@ -590,50 +591,57 @@ module ActionController
         # proper params, as is the case when engaging rack.
         parameters = paramify_values(parameters) if html_format?(parameters)
 
-        @html_document = nil
+        # @html_document = nil
 
-        unless @controller.respond_to?(:recycle!)
-          @controller.extend(Testing::Functional)
-        end
+        # unless @controller.respond_to?(:recycle!)
+        #   @controller.extend(Testing::Functional)
+        # end
 
-        @request.recycle!
-        @response.recycle!
-        @controller.recycle!
+        # @request.recycle!
+        # @response.recycle!
+        # @controller.recycle!
 
-        @request.env['REQUEST_METHOD'] = http_method
+        # @request.env['REQUEST_METHOD'] = http_method
 
         controller_class_name = @controller.class.anonymous? ?
           "anonymous" :
           @controller.class.controller_path
 
-        @request.assign_parameters(@routes, controller_class_name, action.to_s, parameters)
+        # @request.assign_parameters(@routes, controller_class_name, action.to_s, parameters)
 
-        @request.session.update(session) if session
-        @request.flash.update(flash || {})
+        # @request.session.update(session) if session
+        # @request.flash.update(flash || {})
 
         @controller.request  = @request
         @controller.response = @response
 
-        build_request_uri(action, parameters)
+        options = @controller.respond_to?(:url_options) ? @controller.__send__(:url_options).merge(parameters) : parameters
+        options.update(
+          controller: controller_class_name,
+          :action => action,
+          :relative_url_root => nil,
+          :_recall => @request.path_parameters)
 
-        name = @request.parameters[:action]
+        url, query_string = @routes.path_for(options).split("?", 2)
 
-        @controller.recycle!
-        @controller.process(name)
+        # name = @request.parameters[:action]
 
-        if cookies = @request.env['action_dispatch.cookies']
-          unless @response.committed?
-            cookies.write(@response)
-          end
-        end
-        @response.prepare!
+        # @controller.recycle!
+        # @controller.process(name)
+
+        # if cookies = @request.env['action_dispatch.cookies']
+        #   unless @response.committed?
+        #     cookies.write(@response)
+        #   end
+        # end
+        # @response.prepare!
 
         @assigns = @controller.respond_to?(:view_assigns) ? @controller.view_assigns : {}
 
-        if flash_value = @request.flash.to_session_value
-          @request.session['flash'] = flash_value
-        end
-
+        # if flash_value = @request.flash.to_session_value
+        #   @request.session['flash'] = flash_value
+        # end
+        send("super_#{http_method.downcase}", url, parameters, headers_or_env)
         @response
       end
 
@@ -691,22 +699,6 @@ module ActionController
         end
       end
 
-      def build_request_uri(action, parameters)
-        unless @request.env["PATH_INFO"]
-          options = @controller.respond_to?(:url_options) ? @controller.__send__(:url_options).merge(parameters) : parameters
-          options.update(
-            :action => action,
-            :relative_url_root => nil,
-            :_recall => @request.path_parameters)
-
-          url, query_string = @routes.path_for(options).split("?", 2)
-
-          @request.env["SCRIPT_NAME"] = @controller.config.relative_url_root
-          @request.env["PATH_INFO"] = url
-          @request.env["QUERY_STRING"] = query_string || ""
-        end
-      end
-
       def html_format?(parameters)
         return true unless parameters.key?(:format)
         Mime.fetch(parameters[:format]) { Mime['html'] }.html?
@@ -739,6 +731,10 @@ module ActionController
             super(e)
           end
         end
+    end
+
+    %w{get post patch put head delete}.each do |method|
+      alias_method "super_#{method}", method
     end
 
     include Behavior
