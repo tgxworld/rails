@@ -97,10 +97,12 @@ module ActionDispatch
 
       SharedTestRoutes.draw do
         get ':controller(/:action)'
+        post ':controller(/:action)'
       end
 
       ActionDispatch::IntegrationTest.app.routes.draw do
         get ':controller(/:action)'
+        post ':controller(/:action)'
       end
 
       DrawOnce.drew = true

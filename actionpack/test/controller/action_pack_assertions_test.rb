@@ -162,6 +162,7 @@ class ActionPackAssertionsControllerTest < ActionController::TestCase
     assert_match(/\A= Action Pack/, @response.body)
   end
 
+  # Integration tests will just return a response with status 500
   def test_get_request
     assert_raise(RuntimeError) { get :raise_exception_on_get }
     get :raise_exception_on_post
@@ -195,6 +196,10 @@ class ActionPackAssertionsControllerTest < ActionController::TestCase
 
   def test_assert_redirect_to_named_route_failure
     with_routing do |set|
+      ActionPackAssertionsController.class_eval do
+        include set.url_helpers
+      end
+
       set.draw do
         get 'route_one', :to => 'action_pack_assertions#nothing', :as => :route_one
         get 'route_two', :to => 'action_pack_assertions#nothing', :id => 'two', :as => :route_two
@@ -220,6 +225,10 @@ class ActionPackAssertionsControllerTest < ActionController::TestCase
     @controller = Admin::InnerModuleController.new
 
     with_routing do |set|
+      Admin::InnerModuleController.class_eval do
+        include set.url_helpers
+      end
+
       set.draw do
         get 'admin/inner_module', :to => 'admin/inner_module#index', :as => :admin_inner_module
         get ':controller/:action'
@@ -234,6 +243,10 @@ class ActionPackAssertionsControllerTest < ActionController::TestCase
     @controller = Admin::InnerModuleController.new
 
     with_routing do |set|
+      Admin::InnerModuleController.class_eval do
+        include set.url_helpers
+      end
+
       set.draw do
         get '/action_pack_assertions/:id', :to => 'action_pack_assertions#index', :as => :top_level
         get ':controller/:action'
@@ -249,6 +262,10 @@ class ActionPackAssertionsControllerTest < ActionController::TestCase
     @controller = Admin::InnerModuleController.new
 
     with_routing do |set|
+      Admin::InnerModuleController.class_eval do
+        include set.url_helpers
+      end
+
       set.draw do
         # this controller exists in the admin namespace as well which is the only difference from previous test
         get '/user/:id', :to => 'user#index', :as => :top_level
@@ -380,7 +397,7 @@ class ActionPackAssertionsControllerTest < ActionController::TestCase
 
   def test_response_object
     process :nothing
-    assert_kind_of ActionController::TestResponse, @response
+    assert_kind_of ActionDispatch::TestResponse, @response
   end
 
   def test_render_based_on_parameters
@@ -442,6 +459,7 @@ class ActionPackAssertionsControllerTest < ActionController::TestCase
     assert_redirected_to :controller => 'admin/user'
   end
 
+  # Integration tests will just return a response with status 500
   def test_assert_response_uses_exception_message
     @controller = AssertResponseWithUnexpectedErrorController.new
     e = assert_raise RuntimeError, 'Expected non-success response' do

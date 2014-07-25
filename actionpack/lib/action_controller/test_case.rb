@@ -579,7 +579,7 @@ module ActionController
       def process(action, http_method = 'GET', *args)
         check_required_ivars
 
-        headers_or_env = {}
+        headers_or_env = { 'action_dispatch.show_exceptions' => false }
         if args.first.is_a?(String) && http_method != 'HEAD'
           headers_or_env['RAW_POST_DATA'] = args.shift
         end
