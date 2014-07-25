@@ -33,22 +33,22 @@ class AssertSelectTest < ActionController::TestCase
   end
 
   class AssertSelectController < ActionController::Base
-    def response_with=(content)
-      @content = content
-    end
-
     def response_with(&block)
       @update = block
     end
 
     def html()
-      render :text=>@content, :layout=>false, :content_type=>Mime::HTML
+      render :text=>content, :layout=>false, :content_type=>Mime::HTML
       @content = nil
     end
 
     def xml()
-      render :text=>@content, :layout=>false, :content_type=>Mime::XML
+      render :text=>content, :layout=>false, :content_type=>Mime::XML
       @content = nil
+    end
+
+    def content
+      @content = params[:content]
     end
   end
 
@@ -345,12 +345,10 @@ EOF
 
   protected
     def render_html(html)
-      @controller.response_with = html
-      get :html
+      get :html, { content: html }
     end
 
     def render_xml(xml)
-      @controller.response_with = xml
-      get :xml
+      get :xml, { content: xml }
     end
 end
