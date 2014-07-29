@@ -646,6 +646,7 @@ module ActionController
           X-HTTP_AUTHORIZATION
           X_HTTP_AUTHORIZATION
           REDIRECT_X_HTTP_AUTHORIZATION
+          action_dispatch.key_generator
         }
 
         allowed_headers.each do |header|
