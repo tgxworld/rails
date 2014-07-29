@@ -636,13 +636,12 @@ module ActionController
         # end
         # @response.prepare!
 
-        @assigns = @controller.respond_to?(:view_assigns) ? @controller.view_assigns : {}
-
         # if flash_value = @request.flash.to_session_value
         #   @request.session['flash'] = flash_value
         # end
         headers_or_env.merge!({ 'HTTP_ACCEPT' => @request.env["HTTP_ACCEPT"] })
         send("super_#{http_method.downcase}", url, parameters, headers_or_env)
+        @assigns = @controller.respond_to?(:view_assigns) ? @controller.view_assigns : {}
         @response
       end
 
