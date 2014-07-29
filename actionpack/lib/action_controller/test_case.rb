@@ -640,7 +640,20 @@ module ActionController
         # if flash_value = @request.flash.to_session_value
         #   @request.session['flash'] = flash_value
         # end
-        headers_or_env.merge!({ 'HTTP_ACCEPT' => @request.env["HTTP_ACCEPT"] })
+        allowed_headers = %w{
+          HTTP_ACCEPT
+          HTTP_AUTHORIZATION
+          X-HTTP_AUTHORIZATION
+          X_HTTP_AUTHORIZATION
+          REDIRECT_X_HTTP_AUTHORIZATION
+        }
+
+        allowed_headers.each do |header|
+          if @request.env.include?(header)
+            headers_or_env[header] = @request.env[header]
+          end
+        end
+
         send("super_#{http_method.downcase}", url, parameters, headers_or_env)
         @assigns = @controller.respond_to?(:view_assigns) ? @controller.view_assigns : {}
         @response
