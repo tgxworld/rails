@@ -165,6 +165,8 @@ class FunctionalCachingController < CachingController
   end
 
   def formatted_fragment_cached_with_variant
+    request.variant = :phone
+
     respond_to do |format|
       format.html.phone
       format.html
@@ -176,14 +178,18 @@ class FunctionalCachingController < CachingController
 end
 
 class FunctionalFragmentCachingTest < ActionController::TestCase
-  def setup
-    super
+  setup do
     @store = ActiveSupport::Cache::MemoryStore.new
     @controller = FunctionalCachingController.new
     @controller.perform_caching = true
-    @controller.cache_store = @store
+    @old_controller_cache_store = @controller.class.cache_store
+    @controller.class.cache_store = @store
     @request = ActionController::TestRequest.new
     @response = ActionController::TestResponse.new
+  end
+
+  teardown do
+    @controller.class.cache_store = @old_controller_cache_store
   end
 
   def test_fragment_caching
@@ -267,8 +273,6 @@ CACHED
 
 
   def test_fragment_caching_with_variant
-    @request.variant = :phone
-
     get :formatted_fragment_cached_with_variant, :format => "html"
     assert_response :success
     expected_body = "<body>\n<p>PHONE</p>\n</body>\n"
