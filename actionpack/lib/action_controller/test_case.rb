@@ -184,8 +184,10 @@ module ActionController
     def initialize(env = {})
       super
 
-      self.session = TestSession.new
-      self.session_options = TestSession::DEFAULT_OPTIONS.merge(:id => SecureRandom.hex(16))
+      if self.session.empty?
+        self.session = TestSession.new
+        self.session_options = TestSession::DEFAULT_OPTIONS.merge(:id => SecureRandom.hex(16))
+      end
     end
 
     def assign_parameters(routes, controller_path, action, parameters = {})
@@ -657,6 +659,7 @@ module ActionController
 
         send("super_#{http_method.downcase}", url, parameters, headers_or_env)
         @assigns = @controller.respond_to?(:view_assigns) ? @controller.view_assigns : {}
+        @request = build_request(@request.env)
         @response
       end
 
@@ -688,8 +691,8 @@ module ActionController
         end
       end
 
-      def build_request
-        TestRequest.new
+      def build_request(env = {})
+        TestRequest.new(env)
       end
 
       def build_response(klass)
