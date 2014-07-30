@@ -621,15 +621,17 @@ module ActionController
         @controller.request  = @request
         @controller.response = @response
 
-        options = @controller.respond_to?(:url_options) ? @controller.__send__(:url_options).merge(parameters) : parameters
-        options.update(
-          controller: controller_class_name,
-          :action => action,
-          :relative_url_root => nil,
-          :_recall => @request.path_parameters)
+        unless url = @request.env["PATH_INFO"]
+          options = @controller.respond_to?(:url_options) ? @controller.__send__(:url_options).merge(parameters) : parameters
+          options.update(
+            controller: controller_class_name,
+            :action => action,
+            :relative_url_root => nil,
+            :_recall => @request.path_parameters)
 
-        url, query_string = @routes.path_for(options).split("?", 2)
-        url = "#{url}/#{action}" if %w{ index }.include?(action.to_s)
+          url, query_string = @routes.path_for(options).split("?", 2)
+          url = "#{url}/#{action}" if %w{ index }.include?(action.to_s)
+        end
 
         # name = @request.parameters[:action]
 
@@ -663,6 +665,7 @@ module ActionController
 
         send("super_#{http_method.downcase}", url, parameters, headers_or_env)
         @assigns = @controller.respond_to?(:view_assigns) ? @controller.view_assigns : {}
+        @request.env.delete('PATH_INFO')
         @request = build_request(@request.env)
         @response
       end
