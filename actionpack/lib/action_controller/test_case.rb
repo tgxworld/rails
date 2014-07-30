@@ -670,6 +670,10 @@ module ActionController
           end
         end
 
+        if @request.env["CONTENT_TYPE"] == 'application/json'
+          parameters = parameters.to_json
+        end
+
         send("super_#{http_method.downcase}", url, parameters, headers_or_env)
         @assigns = @controller.respond_to?(:view_assigns) ? @controller.view_assigns : {}
         @request.env.delete('PATH_INFO')
