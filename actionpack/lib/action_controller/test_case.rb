@@ -630,7 +630,10 @@ module ActionController
             :_recall => @request.path_parameters)
 
           url, query_string = @routes.path_for(options).split("?", 2)
-          url = "#{url}/#{action}" if %w{ index }.include?(action.to_s)
+
+          if %w{ index }.include?(action.to_s) && !parameters[:format]
+            url = "#{url}/#{action}"
+          end
         end
 
         # name = @request.parameters[:action]
