@@ -613,6 +613,10 @@ module ActionController
 
         # @request.session.update(session) if session
         # @request.flash.update(flash || {})
+        if @request.session
+          headers_or_env["rack.session"] = @request.session
+        end
+
 
         @controller.request  = @request
         @controller.response = @response
