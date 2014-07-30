@@ -86,7 +86,7 @@ class ACLogSubscriberTest < ActionController::TestCase
     @old_logger = ActionController::Base.logger
 
     @cache_path = File.join Dir.tmpdir, Dir::Tmpname.make_tmpname('tmp', 'cache')
-    @controller.cache_store = :file_store, @cache_path
+    @controller.class.cache_store = :file_store, @cache_path
     ActionController::LogSubscriber.attach_to :action_controller
   end
 
@@ -219,7 +219,7 @@ class ACLogSubscriberTest < ActionController::TestCase
   end
 
   def test_with_fragment_cache
-    @controller.config.perform_caching = true
+    @controller.class.config.perform_caching = true
     get :with_fragment_cache
     wait
 
@@ -227,11 +227,11 @@ class ACLogSubscriberTest < ActionController::TestCase
     assert_match(/Read fragment views\/foo/, logs[1])
     assert_match(/Write fragment views\/foo/, logs[2])
   ensure
-    @controller.config.perform_caching = true
+    @controller.class.config.perform_caching = true
   end
 
   def test_with_fragment_cache_if_with_true
-    @controller.config.perform_caching = true
+    @controller.class.config.perform_caching = true
     get :with_fragment_cache_if_with_true_condition
     wait
 
@@ -239,11 +239,11 @@ class ACLogSubscriberTest < ActionController::TestCase
     assert_match(/Read fragment views\/foo/, logs[1])
     assert_match(/Write fragment views\/foo/, logs[2])
   ensure
-    @controller.config.perform_caching = true
+    @controller.class.config.perform_caching = true
   end
 
   def test_with_fragment_cache_if_with_false
-    @controller.config.perform_caching = true
+    @controller.class.config.perform_caching = true
     get :with_fragment_cache_if_with_false_condition
     wait
 
@@ -251,11 +251,11 @@ class ACLogSubscriberTest < ActionController::TestCase
     assert_no_match(/Read fragment views\/foo/, logs[1])
     assert_no_match(/Write fragment views\/foo/, logs[2])
   ensure
-    @controller.config.perform_caching = true
+    @controller.class.config.perform_caching = true
   end
 
   def test_with_fragment_cache_unless_with_true
-    @controller.config.perform_caching = true
+    @controller.class.config.perform_caching = true
     get :with_fragment_cache_unless_with_true_condition
     wait
 
@@ -263,11 +263,11 @@ class ACLogSubscriberTest < ActionController::TestCase
     assert_no_match(/Read fragment views\/foo/, logs[1])
     assert_no_match(/Write fragment views\/foo/, logs[2])
   ensure
-    @controller.config.perform_caching = true
+    @controller.class.config.perform_caching = true
   end
 
   def test_with_fragment_cache_unless_with_false
-    @controller.config.perform_caching = true
+    @controller.class.config.perform_caching = true
     get :with_fragment_cache_unless_with_false_condition
     wait
 
@@ -275,11 +275,11 @@ class ACLogSubscriberTest < ActionController::TestCase
     assert_match(/Read fragment views\/foo/, logs[1])
     assert_match(/Write fragment views\/foo/, logs[2])
   ensure
-    @controller.config.perform_caching = true
+    @controller.class.config.perform_caching = true
   end
 
   def test_with_fragment_cache_and_percent_in_key
-    @controller.config.perform_caching = true
+    @controller.class.config.perform_caching = true
     get :with_fragment_cache_and_percent_in_key
     wait
 
@@ -287,7 +287,7 @@ class ACLogSubscriberTest < ActionController::TestCase
     assert_match(/Read fragment views\/foo/, logs[1])
     assert_match(/Write fragment views\/foo/, logs[2])
   ensure
-    @controller.config.perform_caching = true
+    @controller.class.config.perform_caching = true
   end
 
   def test_process_action_with_exception_includes_http_status_code

@@ -649,6 +649,7 @@ module ActionController
         #   @request.session['flash'] = flash_value
         # end
         allowed_headers = %w{
+          CONTENT_TYPE
           HTTPS
           HTTP_ACCEPT
           HTTP_AUTHORIZATION
@@ -656,6 +657,8 @@ module ActionController
           X_HTTP_AUTHORIZATION
           REDIRECT_X_HTTP_AUTHORIZATION
           action_dispatch.key_generator
+          action_dispatch.redirect_filter
+          action_dispatch.parameter_filter
         }
 
         allowed_headers.each do |header|
