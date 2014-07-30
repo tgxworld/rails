@@ -649,6 +649,7 @@ module ActionController
         #   @request.session['flash'] = flash_value
         # end
         allowed_headers = %w{
+          HTTPS
           HTTP_ACCEPT
           HTTP_AUTHORIZATION
           X-HTTP_AUTHORIZATION
