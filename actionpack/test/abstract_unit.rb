@@ -98,6 +98,7 @@ module ActionDispatch
       SharedTestRoutes.draw do
         get ':controller(/:action)'
         post ':controller(/:action)'
+        patch ':controller(/:action)'
         put ':controller(/:action)'
         delete ':controller(/:action)'
       end
@@ -105,6 +106,7 @@ module ActionDispatch
       ActionDispatch::IntegrationTest.app.routes.draw do
         get ':controller(/:action)'
         post ':controller(/:action)'
+        patch ':controller(/:action)'
         put ':controller(/:action)'
         delete ':controller(/:action)'
       end

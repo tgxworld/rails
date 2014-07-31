@@ -657,6 +657,8 @@ module ActionController
           HTTP_ACCEPT
           HTTP_AUTHORIZATION
           HTTP_HOST
+          HTTP_X_REQUESTED_WITH
+          HTTP_X_CSRF_TOKEN
           X-HTTP_AUTHORIZATION
           X_HTTP_AUTHORIZATION
           REDIRECT_X_HTTP_AUTHORIZATION
@@ -770,7 +772,7 @@ module ActionController
         end
     end
 
-    %w{get post patch put head delete}.each do |method|
+    %w{get post patch put head delete xhr}.each do |method|
       alias_method "super_#{method}", method
     end
 
