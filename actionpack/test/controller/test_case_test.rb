@@ -203,7 +203,7 @@ XML
 
   def test_document_body_and_params_with_post
     post :test_params, :id => 1
-    assert_equal("{\"id\"=>\"1\", \"controller\"=>\"test_case_test/test\", \"action\"=>\"test_params\"}", @response.body)
+    assert_equal("{\"controller\"=>\"test_case_test/test\", \"action\"=>\"test_params\", \"id\"=>\"1\"}", @response.body)
   end
 
   def test_document_body_with_post
@@ -305,9 +305,9 @@ XML
   end
 
   def test_process_with_request_uri_with_params_with_explicit_uri
-    @request.env['PATH_INFO'] = "/explicit/uri"
+    @request.env['PATH_INFO'] = '/test_case_test/test/test_uri'
     process :test_uri, "GET", :id => 7
-    assert_equal "/explicit/uri", @response.body
+    assert_equal '/test_case_test/test/test_uri', @response.body
   end
 
   def test_process_with_query_string
@@ -316,7 +316,7 @@ XML
   end
 
   def test_process_with_query_string_with_explicit_uri
-    @request.env['PATH_INFO'] = '/explicit/uri'
+    @request.env['PATH_INFO'] = '/test_case_test/test/test_query_string'
     @request.env['QUERY_STRING'] = 'q=test?extra=question'
     process :test_query_string
     assert_equal "q=test?extra=question", @response.body
@@ -652,8 +652,8 @@ XML
   end
 
   test "set additional env variables" do
-    @request.headers['HTTP_REFERER'] = "http://example.com/about"
-    @request.headers['CONTENT_TYPE'] = "application/json"
+    @request.env['HTTP_REFERER'] = "http://example.com/about"
+    @request.env['CONTENT_TYPE'] = "application/json"
     get :test_headers
     parsed_env = ActiveSupport::JSON.decode(@response.body)
     assert_equal "http://example.com/about", parsed_env["HTTP_REFERER"]
@@ -673,8 +673,7 @@ XML
       end
 
       get :test_params, :path => ['hello', 'world']
-      assert_equal ['hello', 'world'], @request.path_parameters[:path]
-      assert_equal 'hello/world', @request.path_parameters[:path].to_param
+      assert_equal 'hello/world', @request.path_parameters[:path]
     end
   end
 
@@ -975,21 +974,23 @@ class AnonymousControllerTest < ActionController::TestCase
 end
 
 class RoutingDefaultsTest < ActionController::TestCase
+  class RoutingDefaultsController < ActionController::Base
+    def post
+      render text: request.fullpath
+    end
+
+    def project
+      render text: request.fullpath
+    end
+  end
+
+  tests RoutingDefaultsController
+
   def setup
-    @controller = Class.new(ActionController::Base) do
-      def post
-        render :text => request.fullpath
-      end
-
-      def project
-        render :text => request.fullpath
-      end
-    end.new
-
     @routes = ActionDispatch::Routing::RouteSet.new.tap do |r|
       r.draw do
-        get '/posts/:id', :to => 'anonymous#post', :bucket_type => 'post'
-        get '/projects/:id', :to => 'anonymous#project', :defaults => { :bucket_type => 'project' }
+        get '/posts/:id', :to => 'routing_defaults_test/routing_defaults#post', :bucket_type => 'post'
+        get '/projects/:id', :to => 'routing_defaults_test/routing_defaults#project', :defaults => { :bucket_type => 'project' }
       end
     end
   end

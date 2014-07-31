@@ -603,15 +603,15 @@ module ActionController
         # @response.recycle!
         # @controller.recycle!
 
-        # @request.env['REQUEST_METHOD'] = http_method
+        @request.env['REQUEST_METHOD'] = http_method
 
         controller_class_name = @controller.class.anonymous? ?
           "anonymous" :
           @controller.class.controller_path
 
-        # @request.assign_parameters(@routes, controller_class_name, action.to_s, parameters)
+        @request.assign_parameters(@routes, controller_class_name, action.to_s, parameters)
 
-        # @request.session.update(session) if session
+        @request.session.update(session) if session
         # @request.flash.update(flash || {})
         if @request.session
           headers_or_env["rack.session"] = @request.session
@@ -634,6 +634,8 @@ module ActionController
           if %w{ index }.include?(action.to_s) && !parameters[:format]
             url = "#{url}/#{action}"
           end
+
+          @request.env["QUERY_STRING"] = query_string
         end
 
         # name = @request.parameters[:action]
@@ -653,6 +655,7 @@ module ActionController
         # end
         allowed_headers = %w{
           CONTENT_TYPE
+          CONTENT_LENGTH
           HTTPS
           HTTP_ACCEPT
           HTTP_AUTHORIZATION
@@ -663,14 +666,17 @@ module ActionController
           X-HTTP_AUTHORIZATION
           X_HTTP_AUTHORIZATION
           REDIRECT_X_HTTP_AUTHORIZATION
+          REMOTE_ADDR
+          QUERY_STRING
           action_dispatch.key_generator
           action_dispatch.redirect_filter
           action_dispatch.parameter_filter
+          rack.input
         }
 
         allowed_headers.each do |header|
           if @request.env.include?(header)
-            headers_or_env[header] = @request.env[header]
+            headers_or_env[header] ||= @request.env[header]
           end
         end
 

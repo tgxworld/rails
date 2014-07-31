@@ -105,7 +105,9 @@ module ActionDispatch
 
       ActionDispatch::IntegrationTest.app.routes.draw do
         get ':controller(/:action)'
+        get ':controller(/:action(/:id))'
         post ':controller(/:action)'
+        post ':controller(/:action(/:id))'
         patch ':controller(/:action)'
         put ':controller(/:action)'
         delete ':controller(/:action)'
