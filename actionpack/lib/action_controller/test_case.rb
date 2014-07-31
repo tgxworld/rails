@@ -657,6 +657,7 @@ module ActionController
           HTTP_ACCEPT
           HTTP_AUTHORIZATION
           HTTP_HOST
+          HTTP_REFERER
           HTTP_X_REQUESTED_WITH
           HTTP_X_CSRF_TOKEN
           X-HTTP_AUTHORIZATION

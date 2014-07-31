@@ -264,6 +264,11 @@ class RedirectTest < ActionController::TestCase
 
   def test_redirect_to_record
     with_routing do |set|
+      # FIXME: We shouldn't have to do this.
+      @controller.class.class_eval do
+        include set.url_helpers
+      end
+
       set.draw do
         resources :workshops
         get ':controller/:action'
