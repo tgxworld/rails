@@ -687,13 +687,22 @@ class RespondWithControllerTest < ActionController::TestCase
 
   private
     def with_test_route_set
+      # FIXME: Figure out how to avoid drawing all this routes manually.
       with_routing do |set|
+        @controller.class.class_eval do
+          include set.url_helpers
+        end
+
         set.draw do
           resources :customers
           resources :quiz_stores do
             resources :customers
           end
           get ":controller/:action"
+          post ":controller/:action"
+          put ":controller/:action"
+          patch ":controller/:action"
+          delete ":controller/:action"
         end
         yield
       end

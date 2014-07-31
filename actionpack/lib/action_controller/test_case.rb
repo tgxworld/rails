@@ -656,6 +656,7 @@ module ActionController
           HTTPS
           HTTP_ACCEPT
           HTTP_AUTHORIZATION
+          HTTP_HOST
           X-HTTP_AUTHORIZATION
           X_HTTP_AUTHORIZATION
           REDIRECT_X_HTTP_AUTHORIZATION

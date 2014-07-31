@@ -99,12 +99,14 @@ module ActionDispatch
         get ':controller(/:action)'
         post ':controller(/:action)'
         put ':controller(/:action)'
+        delete ':controller(/:action)'
       end
 
       ActionDispatch::IntegrationTest.app.routes.draw do
         get ':controller(/:action)'
         post ':controller(/:action)'
         put ':controller(/:action)'
+        delete ':controller(/:action)'
       end
 
       DrawOnce.drew = true
