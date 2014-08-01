@@ -604,16 +604,6 @@ XML
     )
   end
 
-  def test_params_passing_with_fixnums_when_not_html_request
-    get :test_params, :format => 'json', :count => 999
-    parsed_params = eval(@response.body)
-    assert_equal(
-      {'controller' => 'test_case_test/test', 'action' => 'test_params',
-       'format' => 'json', 'count' => 999 },
-      parsed_params
-    )
-  end
-
   def test_params_passing_path_parameter_is_string_when_not_html_request
     get :test_params, :format => 'json', :id => 1
     parsed_params = eval(@response.body)
