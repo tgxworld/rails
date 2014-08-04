@@ -688,6 +688,8 @@ module ActionController
           flash: [:update, (flash || {})]
         }
 
+        headers_or_env['action_dispatch.cookies'] = cookies
+
         Metal.class_eval do
           def dispatch(name, request) #:nodoc:
             @_request = request
