@@ -977,7 +977,7 @@ class RoutingDefaultsTest < ActionController::TestCase
   tests RoutingDefaultsController
 
   def setup
-    @routes = ActionDispatch::Routing::RouteSet.new.tap do |r|
+    @routes = self.app.routes.tap do |r|
       r.draw do
         get '/posts/:id', :to => 'routing_defaults_test/routing_defaults#post', :bucket_type => 'post'
         get '/projects/:id', :to => 'routing_defaults_test/routing_defaults#project', :defaults => { :bucket_type => 'project' }
