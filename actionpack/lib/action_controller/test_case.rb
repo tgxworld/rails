@@ -613,11 +613,6 @@ module ActionController
 
         @request.session.update(session) if session
 
-        if @request.session
-          headers_or_env["rack.session"] = @request.session
-        end
-
-
         @controller.request  = @request
         @controller.response = @response
 
@@ -672,6 +667,7 @@ module ActionController
           action_dispatch.redirect_filter
           action_dispatch.parameter_filter
           rack.input
+          rack.session
         }
 
         allowed_headers.each do |header|
