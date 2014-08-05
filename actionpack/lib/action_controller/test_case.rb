@@ -593,16 +593,6 @@ module ActionController
         # proper params, as is the case when engaging rack.
         parameters = paramify_values(parameters) if html_format?(parameters)
 
-        # @html_document = nil
-
-        # unless @controller.respond_to?(:recycle!)
-        #   @controller.extend(Testing::Functional)
-        # end
-
-        # @request.recycle!
-        # @response.recycle!
-        # @controller.recycle!
-
         @request.env['REQUEST_METHOD'] = http_method
 
         controller_class_name = @controller.class.controller_path
@@ -631,21 +621,6 @@ module ActionController
           @request.env["QUERY_STRING"] = query_string
         end
 
-        # name = @request.parameters[:action]
-
-        # @controller.recycle!
-        # @controller.process(name)
-
-        # if cookies = @request.env['action_dispatch.cookies']
-        #   unless @response.committed?
-        #     cookies.write(@response)
-        #   end
-        # end
-        # @response.prepare!
-
-        # if flash_value = @request.flash.to_session_value
-        #   @request.session['flash'] = flash_value
-        # end
         allowed_headers = %w{
           CONTENT_TYPE
           CONTENT_LENGTH
