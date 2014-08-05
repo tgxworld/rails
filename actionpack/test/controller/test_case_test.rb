@@ -942,27 +942,6 @@ class NamedRoutesControllerTest < ActionController::TestCase
   end
 end
 
-class AnonymousControllerTest < ActionController::TestCase
-  def setup
-    @controller = Class.new(ActionController::Base) do
-      def index
-        render :text => params[:controller]
-      end
-    end.new
-
-    @routes = ActionDispatch::Routing::RouteSet.new.tap do |r|
-      r.draw do
-        get ':controller(/:action(/:id))'
-      end
-    end
-  end
-
-  def test_controller_name
-    get :index
-    assert_equal 'anonymous', @response.body
-  end
-end
-
 class RoutingDefaultsTest < ActionController::TestCase
   class RoutingDefaultsController < ActionController::Base
     def post

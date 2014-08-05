@@ -605,9 +605,7 @@ module ActionController
 
         @request.env['REQUEST_METHOD'] = http_method
 
-        controller_class_name = @controller.class.anonymous? ?
-          "anonymous" :
-          @controller.class.controller_path
+        controller_class_name = @controller.class.controller_path
 
         @request.assign_parameters(@routes, controller_class_name, action.to_s, parameters)
 
