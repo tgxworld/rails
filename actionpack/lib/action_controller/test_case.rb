@@ -597,8 +597,6 @@ module ActionController
 
         controller_class_name = @controller.class.controller_path
 
-        @request.assign_parameters(@routes, controller_class_name, action.to_s, parameters)
-
         @request.session.update(session) if session
 
         @controller.request  = @request
@@ -617,13 +615,10 @@ module ActionController
           if %w{ index }.include?(action.to_s) && !parameters[:format]
             url = "#{url}/#{action}"
           end
-
-          @request.env["QUERY_STRING"] = query_string
         end
 
         allowed_headers = %w{
           CONTENT_TYPE
-          CONTENT_LENGTH
           HTTPS
           HTTP_ACCEPT
           HTTP_AUTHORIZATION
@@ -635,11 +630,9 @@ module ActionController
           X_HTTP_AUTHORIZATION
           REDIRECT_X_HTTP_AUTHORIZATION
           REMOTE_ADDR
-          QUERY_STRING
           action_dispatch.key_generator
           action_dispatch.redirect_filter
           action_dispatch.parameter_filter
-          rack.input
           rack.session
         }
 
