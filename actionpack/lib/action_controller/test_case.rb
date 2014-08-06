@@ -615,6 +615,10 @@ module ActionController
           if %w{ index }.include?(action.to_s) && !parameters[:format]
             url = "#{url}/#{action}"
           end
+
+          unless query_string && query_string.match(/file/)
+            headers_or_env["QUERY_STRING"] = query_string
+          end
         end
 
         allowed_headers = %w{
@@ -630,6 +634,7 @@ module ActionController
           X_HTTP_AUTHORIZATION
           REDIRECT_X_HTTP_AUTHORIZATION
           REMOTE_ADDR
+          QUERY_STRING
           action_dispatch.key_generator
           action_dispatch.redirect_filter
           action_dispatch.parameter_filter
