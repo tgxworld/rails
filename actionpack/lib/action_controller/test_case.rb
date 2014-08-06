@@ -690,6 +690,7 @@ module ActionController
         end
 
         @assigns = @controller.respond_to?(:view_assigns) ? @controller.view_assigns : {}
+        @request.env.delete('QUERY_STRING')
         @request.env.delete('PATH_INFO')
         @request = build_request(@request.env)
         @response
