@@ -127,7 +127,7 @@ module ActionDispatch
       end
 
       def html_document
-        xml = @response.content_type =~ /xml$/
+        xml = @response.content_type.to_s =~ /xml$/
         @html_document ||= HTML::Document.new(@response.body, false, xml)
       end
     end
