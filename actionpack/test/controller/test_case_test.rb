@@ -190,7 +190,7 @@ XML
     params = Hash[:page, {:name => 'page name'}, 'some key', 123]
     post :render_raw_post, params.dup
 
-    assert_equal params.to_query, @response.body
+    assert_equal Rack::Utils.build_nested_query(paramify_values(params)), @response.body
   end
 
   def test_body_stream
@@ -198,7 +198,7 @@ XML
 
     post :render_body, params.dup
 
-    assert_equal params.to_query, @response.body
+    assert_equal Rack::Utils.build_nested_query(paramify_values(params)), @response.body
   end
 
   def test_document_body_and_params_with_post
