@@ -59,7 +59,7 @@ class TestCaseTest < ActionController::TestCase
     end
 
     def test_headers
-      render text: request.headers.env.to_json
+      render text: request.headers.env.except('action_controller.instance').to_json
     end
 
     def test_html_output
