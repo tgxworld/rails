@@ -562,9 +562,10 @@ module ActionController
           options = @controller.respond_to?(:url_options) ? @controller.__send__(:url_options).merge(parameters) : parameters
           options.update(
             controller: controller_class_name,
-            :action => action,
-            :relative_url_root => nil,
-            :_recall => @request.path_parameters)
+            action: action,
+            relative_url_root: nil,
+            _recall: @request.path_parameters
+          )
 
           url, query_string = @routes.path_for(options).split("?", 2)
 
