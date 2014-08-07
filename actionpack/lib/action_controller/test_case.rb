@@ -657,37 +657,7 @@ module ActionController
 
         headers_or_env['action_dispatch.cookies'] = cookies
 
-        Metal.class_eval do
-          def dispatch(name, request) #:nodoc:
-            @_request = request
-            @_env = request.env
-
-            @_env['action_controller.functional_test'].each do |key, value|
-              case value
-              when Array
-                self.send(key).send(value.first, value.last)
-              else
-                self.send("#{key}=", value)
-              end
-            end
-
-            @_env['action_controller.instance'] = self
-            process(name)
-            to_a
-          end
-        end
-
         send("super_#{http_method.downcase}", url, parameters, headers_or_env)
-
-        Metal.class_eval do
-          def dispatch(name, request) #:nodoc:
-            @_request = request
-            @_env = request.env
-            @_env['action_controller.instance'] = self
-            process(name)
-            to_a
-          end
-        end
 
         @assigns = @controller.respond_to?(:view_assigns) ? @controller.view_assigns : {}
         @request.env.delete('QUERY_STRING')
