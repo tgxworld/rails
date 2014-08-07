@@ -263,6 +263,15 @@ class RespondToController < ActionController::Base
     end
 end
 
+class RespondToWithRenderActionController < RespondToController
+  def render(*args)
+    @action = args.first[:action] unless args.empty?
+    @action ||= action_name
+
+    response.body = "#{@action} - #{formats}"
+  end
+end
+
 class RespondToControllerTest < ActionController::TestCase
   def setup
     super
@@ -569,14 +578,7 @@ class RespondToControllerTest < ActionController::TestCase
   end
 
   def test_render_action_for_html
-    @controller.instance_eval do
-      def render(*args)
-        @action = args.first[:action] unless args.empty?
-        @action ||= action_name
-
-        response.body = "#{@action} - #{formats}"
-      end
-    end
+    @controller = RespondToWithRenderActionController.new
 
     get :using_defaults
     assert_equal "using_defaults - #{[:html].to_s}", @response.body

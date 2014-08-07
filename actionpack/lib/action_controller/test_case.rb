@@ -608,8 +608,12 @@ module ActionController
           parameters = parameters.to_json
         end
 
-        headers_or_env['action_controller.functional_test'] = {
+        headers_or_env['action_controller.functional_test.controller'] = {
           flash: [:update, (flash || {})]
+        }
+
+        headers_or_env['action_controller.functional_test.request'] = {
+          variant: @request.variant
         }
 
         headers_or_env['action_dispatch.cookies'] = cookies

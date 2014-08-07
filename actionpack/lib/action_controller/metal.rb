@@ -192,8 +192,14 @@ module ActionController
       @_request = request
       @_env = request.env
 
-      if @_env['action_controller.functional_test']
-        @_env['action_controller.functional_test'].each do |key, value|
+      if @_env['action_controller.functional_test.request']
+        @_env['action_controller.functional_test.request'].each do |key, value|
+          request.send("#{key}=", value) unless value.nil?
+        end
+      end
+
+      if @_env['action_controller.functional_test.controller']
+        @_env['action_controller.functional_test.controller'].each do |key, value|
           case value
           when Array
             self.send(key).send(value.first, value.last)
