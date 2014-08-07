@@ -557,7 +557,6 @@ module ActionController
         @request.session.update(session) if session
 
         @controller.request  = @request
-        @controller.response = @response
 
         unless url = @request.env["PATH_INFO"]
           options = @controller.respond_to?(:url_options) ? @controller.__send__(:url_options).merge(parameters) : parameters
