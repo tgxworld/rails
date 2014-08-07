@@ -8,16 +8,6 @@ class TestCaseTest < ActionController::TestCase
       render :text => 'dummy'
     end
 
-    def set_flash
-      flash["test"] = ">#{flash["test"]}<"
-      render :text => 'ignore me'
-    end
-
-    def set_flash_now
-      flash.now["test_now"] = ">#{flash["test_now"]}<"
-      render :text => 'ignore me'
-    end
-
     def set_session
       session['string'] = 'A wonder'
       session[:symbol] = 'it works'
@@ -233,21 +223,6 @@ XML
 
   def test_head_params_as_string
     assert_raise(NoMethodError) { head :test_params, "document body", :id => 10 }
-  end
-
-  def test_process_without_flash
-    process :set_flash
-    assert_equal '><', flash['test']
-  end
-
-  def test_process_with_flash
-    process :set_flash, "GET", nil, nil, { "test" => "value" }
-    assert_equal '>value<', flash['test']
-  end
-
-  def test_process_with_flash_now
-    process :set_flash_now, "GET", nil, nil, { "test_now" => "value_now" }
-    assert_equal '>value_now<', flash['test_now']
   end
 
   def test_process_with_session

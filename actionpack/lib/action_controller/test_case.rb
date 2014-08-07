@@ -361,14 +361,12 @@ module ActionController
   #
   # * assigns: Instance variables assigned in the action that are available for the view.
   # * session: Objects being saved in the session.
-  # * flash: The flash objects currently in the session.
   # * cookies: \Cookies being sent to the user on this request.
   #
   # These collections can be used just like any other hash:
   #
   #   assert_not_nil assigns(:person) # makes sure that a @person instance variable was set
   #   assert_equal "Dave", cookies[:name] # makes sure that a cookie called :name was set as "Dave"
-  #   assert flash.empty? # makes sure that there's nothing in the flash
   #
   # For historic reasons, the assigns hash uses string-based keys. So <tt>assigns[:person]</tt> won't work, but <tt>assigns["person"]</tt> will. To
   # appease our yearning for symbols, though, an alternative accessor has been devised using a method call instead of index referencing.
@@ -449,7 +447,6 @@ module ActionController
       #   be +nil+, a hash, or a string that is appropriately encoded
       #   (<tt>application/x-www-form-urlencoded</tt> or <tt>multipart/form-data</tt>).
       # - +session+: A hash of parameters to store in the session. This may be +nil+.
-      # - +flash+: A hash of parameters to store in the flash. This may be +nil+.
       #
       # You can also simulate POST, PATCH, PUT, DELETE, and HEAD requests with
       # +post+, +patch+, +put+, +delete+, and +head+.
@@ -490,10 +487,10 @@ module ActionController
         process(action, "HEAD", *args)
       end
 
-      def xml_http_request(request_method, action, parameters = nil, session = nil, flash = nil)
+      def xml_http_request(request_method, action, parameters = nil, session = nil)
         @request.env['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest'
         @request.env['HTTP_ACCEPT'] ||=  [Mime::JS, Mime::HTML, Mime::XML, 'text/xml', Mime::ALL].join(', ')
-        __send__(request_method, action, parameters, session, flash).tap do
+        __send__(request_method, action, parameters, session).tap do
           @request.env.delete 'HTTP_X_REQUESTED_WITH'
           @request.env.delete 'HTTP_ACCEPT'
         end
@@ -523,15 +520,10 @@ module ActionController
       #   string that is appropriately encoded (+application/x-www-form-urlencoded+
       #   or +multipart/form-data+).
       # - +session+: A hash of parameters to store in the session. This may be +nil+.
-      # - +flash+: A hash of parameters to store in the flash. This may be +nil+.
       #
       # Example calling +create+ action and sending two params:
       #
       #   process :create, 'POST', user: { name: 'Gaurish Sharma', email: 'user@example.com' }
-      #
-      # Example sending parameters, +nil+ session and setting a flash message:
-      #
-      #   process :view, 'GET', { id: 7 }, nil, { notice: 'This is flash message' }
       #
       # To simulate +GET+, +POST+, +PATCH+, +PUT+, +DELETE+ and +HEAD+ requests
       # prefer using #get, #post, #patch, #put, #delete and #head methods
@@ -547,7 +539,7 @@ module ActionController
           headers_or_env['RAW_POST_DATA'] = args.shift
         end
 
-        parameters, session, flash = args
+        parameters, session = args
         parameters ||= {}
 
         # Ensure that numbers and symbols passed as params are converted to
@@ -605,10 +597,6 @@ module ActionController
             headers_or_env[header] ||= @request.env[header]
           end
         end
-
-        headers_or_env['action_controller.functional_test.controller'] = {
-          flash: [:update, (flash || {})]
-        }
 
         send("super_#{http_method.downcase}", url, parameters, headers_or_env)
 
