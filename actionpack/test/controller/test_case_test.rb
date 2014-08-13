@@ -203,7 +203,7 @@ XML
 
   def test_document_body_and_params_with_post
     post :test_params, :id => 1
-    assert_equal("{\"id\"=>\"1\", \"controller\"=>\"test_case_test/test\", \"action\"=>\"test_params\"}", @response.body)
+    assert_equal("{\"controller\"=>\"test_case_test/test\", \"action\"=>\"test_params\", \"id\"=>\"1\"}", @response.body)
   end
 
   def test_document_body_with_post
@@ -292,7 +292,7 @@ XML
   def test_process_with_request_uri_with_params_with_explicit_uri
     @request.env['PATH_INFO'] = '/test_case_test/test/test_uri'
     process :test_uri, "GET", :id => 7
-    assert_equal '/test_case_test/test/test_uri', @response.body
+    assert_equal '/test_case_test/test/test_uri?id=7', @response.body
   end
 
   def test_process_with_query_string
