@@ -138,8 +138,12 @@ module ActionDispatch
       #     assert_equal "/users", users_path
       #   end
       #
-      def with_routing
-        old_routes, @routes = @routes, ActionDispatch::Routing::RouteSet.new
+      def with_routing(&block)
+        old_routes = @routes || SharedTestRoutes
+        @routes = ActionDispatch::Routing::RouteSet.new
+        old_app, self.class.app = self.class.app, self.class.build_app(@routes)
+        silence_warnings { Object.const_set(:SharedTestRoutes, @routes) }
+
         if defined?(@controller) && @controller
           old_controller, @controller = @controller, @controller.clone
           _routes = @routes
@@ -155,12 +159,16 @@ module ActionDispatch
             include _routes.url_helpers
           end
         end
+
         yield @routes
       ensure
-        @routes = old_routes
         if defined?(@controller) && @controller
           @controller = old_controller
         end
+
+        self.class.app = old_app
+        silence_warnings { Object.const_set(:SharedTestRoutes, old_routes) }
+        @routes = old_routes
       end
 
       # ROUTES TODO: These assertions should really work in an integration context
