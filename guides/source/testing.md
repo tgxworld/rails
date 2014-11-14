@@ -787,7 +787,7 @@ Rake Tasks for Running your Tests
 
 You don't need to set up and run your tests by hand on a test-by-test basis.
 Rails comes with a number of built-in rake tasks to help in testing.
-Below table lists available commands which comes along with `Rakefile` tasks
+Below table lists available commands which come along with `Rakefile` tasks
 when you initiate a Rails project.
 
 | Tasks                   | Description |
