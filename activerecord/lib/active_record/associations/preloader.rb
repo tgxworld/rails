@@ -91,7 +91,8 @@ module ActiveRecord
       #   { author: :avatar }
       #   [ :books, { author: :avatar } ]
       def preload(records, associations, preload_scope = nil)
-        records       = Array.wrap(records).compact.uniq
+        records = Array.wrap(records).compact
+        records.uniq!
         associations  = Array.wrap(associations)
         preload_scope = preload_scope || NULL_RELATION
 

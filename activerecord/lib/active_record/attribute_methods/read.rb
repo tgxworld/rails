@@ -54,7 +54,8 @@ module ActiveRecord
           attr_name.to_s
         end
 
-        name = self.class.primary_key if name == "id".freeze && self.class.primary_key
+        primary_key = self.class.primary_key
+        name = primary_key if name == "id".freeze && primary_key
         _read_attribute(name, &block)
       end
 
