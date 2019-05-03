@@ -3,24 +3,13 @@
 require "abstract_unit"
 
 class MiddlewareStackTest < ActiveSupport::TestCase
-  class Base
-    def initialize(app)
-      @app = app
-    end
-
-    def call(env)
-      @app.call(env)
-    end
-  end
-
-  class FooMiddleware < Base; end
-  class BarMiddleware < Base; end
-  class BazMiddleware < Base; end
-  class HiyaMiddleware < Base; end
-  class BlockMiddleware < Base
+  class FooMiddleware; end
+  class BarMiddleware; end
+  class BazMiddleware; end
+  class HiyaMiddleware; end
+  class BlockMiddleware
     attr_reader :block
-    def initialize(app, &block)
-      super(app)
+    def initialize(&block)
       @block = block
     end
   end
@@ -118,24 +107,6 @@ class MiddlewareStackTest < ActiveSupport::TestCase
 
   test "can check if Middleware are equal - Middleware" do
     assert_equal @stack.last, @stack.last
-  end
-
-  test "instruments the execution of middlewares" do
-    app = @stack.build(proc { |env| [200, {}, []] })
-    env = {}
-
-    events = []
-
-    subscriber = proc do |*args|
-      events << ActiveSupport::Notifications::Event.new(*args)
-    end
-
-    ActiveSupport::Notifications.subscribed(subscriber, "process_middleware.action_dispatch") do
-      app.call(env)
-    end
-
-    assert_equal 2, events.count
-    assert_equal ["MiddlewareStackTest::BarMiddleware", "MiddlewareStackTest::FooMiddleware"], events.map { |e| e.payload[:middleware] }
   end
 
   test "includes a middleware" do
