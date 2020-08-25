@@ -1383,6 +1383,7 @@ module ActiveRecord
           load_migrated # reload schema_migrations to be sure it wasn't changed by another process before we got the lock
           yield
         ensure
+          puts "RELEASE ADVISORY LOCKS #{connection.release_advisory_lock(lock_id)}"
           if got_lock && !connection.release_advisory_lock(lock_id)
             raise ConcurrentMigrationError.new(
               ConcurrentMigrationError::RELEASE_LOCK_FAILED_MESSAGE
