@@ -32,7 +32,11 @@ module ActiveRecord
         begin
           connection.drop_database(db_config.database)
         rescue => e
-          ActiveRecord::Base.connection.execute("SELECT * FROM pg_stat_activity").each { |row| puts row }
+          ActiveRecord::Base.connection.execute("SELECT * FROM pg_stat_activity WHERE datname = 'test_app_test'").each { |row| puts row }
+          puts "Sleeping for 5 seconds"
+          sleep 5
+          ActiveRecord::Base.connection.execute("SELECT * FROM pg_stat_activity WHERE datname = 'test_app_test'").each { |row| puts row }
+          raise
         end
       end
 
