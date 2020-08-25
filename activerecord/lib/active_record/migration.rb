@@ -1390,7 +1390,7 @@ module ActiveRecord
             ActiveRecord::Base.connection.execute("SELECT * FROM pg_stat_activity WHERE datname = 'test_app_test'").each { |row| puts row }
 
             puts "Trying to release lock"
-            ActiveRecord::Base.connection.execute("SELECT SELECT pg_advisory_unlock(#{lock_id})").each { |row| puts row }
+            ActiveRecord::Base.connection.execute("SELECT pg_advisory_unlock(#{lock_id})").each { |row| puts row }
             puts "Released lock"
 
             if !released
