@@ -1383,11 +1383,17 @@ module ActiveRecord
           load_migrated # reload schema_migrations to be sure it wasn't changed by another process before we got the lock
           yield
         ensure
-          puts "RELEASE ADVISORY LOCKS #{connection.release_advisory_lock(lock_id)}"
-          if got_lock && !connection.release_advisory_lock(lock_id)
-            raise ConcurrentMigrationError.new(
-              ConcurrentMigrationError::RELEASE_LOCK_FAILED_MESSAGE
-            )
+          if got_lock
+            released = connection.release_advisory_lock(lock_id)
+
+            puts "RELEASE ADVISORY LOCKS #{released}"
+            ActiveRecord::Base.connection.execute("SELECT * FROM pg_stat_activity WHERE datname = 'test_app_test'").each { |row| puts row }
+
+            if !released
+              raise ConcurrentMigrationError.new(
+                ConcurrentMigrationError::RELEASE_LOCK_FAILED_MESSAGE
+              )
+            end
           end
         end
       end
