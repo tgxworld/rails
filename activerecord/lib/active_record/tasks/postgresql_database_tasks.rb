@@ -29,7 +29,11 @@ module ActiveRecord
 
       def drop
         establish_master_connection
-        connection.drop_database(db_config.database)
+        begin
+          connection.drop_database(db_config.database)
+        rescue => e
+          ActiveRecord::Base.connection.execute("SELECT * FROM pg_stat_activity").each { |row| puts row }
+        end
       end
 
       def charset
