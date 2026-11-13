@@ -109,7 +109,7 @@ module ActionDispatch
         end
 
         def filter_routes(path)
-          simulator.memos(path) { [] }
+          simulator.memos(path) { [] }.uniq.select { |route| route.path.match?(path) }
         end
 
         def match_head_routes(routes, req)

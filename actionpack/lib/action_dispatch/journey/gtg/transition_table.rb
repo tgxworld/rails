@@ -46,55 +46,47 @@ module ActionDispatch
           Array(t)
         end
 
-        def move(t, full_string, token, start_index, token_matches_default)
-          return [] if t.empty?
+        def move(current_states, _full_string, token, start_index, token_matches_default)
+          return [] if current_states.empty?
 
           next_states = []
+          seen_states = {}
+          pending_states = {}
 
-          transitions_count = t.size
-          i = 0
-          while i < transitions_count
-            s = t[i]
-            previous_start = t[i + 1]
+          index = 0
+          while index < current_states.size
+            state = current_states[index]
+            previous_start = current_states[index + 1]
+
             if previous_start.nil?
-              # In the simple case of a "default" param regex do this fast-path and add all
-              # next states.
-              if token_matches_default && std_state = @stdparam_states[s]
-                next_states << std_state << nil
+              if token_matches_default && (next_state = @stdparam_states[state])
+                add_state(next_states: next_states, seen_states: seen_states, state: next_state)
               end
 
-              # When we have a literal string, we can just pull the next state
-              if states = @string_states[s]
-                state = states[token]
-                next_states << state << nil unless state.nil?
+              if (transitions = @string_states[state]) && (next_state = transitions[token])
+                add_state(next_states: next_states, seen_states: seen_states, state: next_state)
               end
             end
 
-            # For regexes that aren't the "default" style, they may potentially not be
-            # terminated by the first "token" [./?], so we need to continue to attempt to
-            # match this regexp as well as any successful paths that continue out of it.
-            # both paths could be valid.
-            if states = @regexp_states[s]
-              slice_start = if previous_start.nil?
-                start_index
-              else
-                previous_start
+            if (transitions = @regexp_states[state])
+              transitions.each do |regexp, destination_state|
+                next if destination_state.nil?
+                if previous_start || regexp.match?(token)
+                  add_state(
+                    next_states: next_states,
+                    seen_states: seen_states,
+                    state: destination_state,
+                  )
+                end
               end
 
-              slice_length = start_index + token.length - slice_start
-              curr_slice = full_string.slice(slice_start, slice_length)
-
-              states.each { |re, v|
-                # if we match, we can try moving past this
-                next_states << v << nil if !v.nil? && re.match?(curr_slice)
-              }
-
-              # and regardless, we must continue accepting tokens and retrying this regexp. we
-              # need to remember where we started as well so we can take bigger slices.
-              next_states << s << slice_start
+              if !pending_states.key?(state)
+                pending_states[state] = true
+                next_states << state << (previous_start || start_index)
+              end
             end
 
-            i += 2
+            index += 2
           end
 
           next_states
@@ -203,6 +195,14 @@ module ActionDispatch
             hash.map { |r, to| [from, r.source.gsub("\\") { "\\\\" }, to] }
           }
         end
+
+        private
+          def add_state(next_states:, seen_states:, state:)
+            return if seen_states.key?(state)
+
+            seen_states[state] = true
+            next_states << state << nil
+          end
       end
     end
   end
