@@ -28,7 +28,13 @@ module ActionDispatch
           @tt = transition_table
         end
 
+        def bounded_simulator
+          @bounded_simulator ||= self.class.new(tt.dup.extend(BoundedMove))
+        end
+
         def memos(string)
+          transition_table = tt
+          static_tokens = STATIC_TOKENS
           state = INITIAL_STATE
 
           pos = 0
@@ -38,15 +44,15 @@ module ActionDispatch
             start_index = pos
             pos += 1
 
-            if (token = STATIC_TOKENS[string.getbyte(start_index)])
-              state = tt.move(state, string, token, start_index, false)
+            if (token = static_tokens[string.getbyte(start_index)])
+              state = transition_table.move(state, string, token, start_index, false)
             else
-              while pos < eos && STATIC_TOKENS[string.getbyte(pos)].nil?
+              while pos < eos && static_tokens[string.getbyte(pos)].nil?
                 pos += 1
               end
 
               token = string.byteslice(start_index, pos - start_index)
-              state = tt.move(state, string, token, start_index, true)
+              state = transition_table.move(state, string, token, start_index, true)
             end
           end
 
@@ -56,8 +62,8 @@ module ActionDispatch
           while i < states_count
             if state[i + 1].nil?
               s = state[i]
-              if tt.accepting?(s)
-                acceptance_states.concat(tt.memo(s))
+              if transition_table.accepting?(s)
+                acceptance_states.concat(transition_table.memo(s))
               end
             end
             i += 2

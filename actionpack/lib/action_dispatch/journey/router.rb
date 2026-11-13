@@ -14,6 +14,10 @@ require "action_dispatch/journey/path/pattern"
 module ActionDispatch
   module Journey # :nodoc:
     class Router # :nodoc:
+      BOUNDED_SIMULATION_MIN_BYTES = 129
+      BOUNDED_SIMULATION_MIN_SEPARATORS = 65
+      private_constant :BOUNDED_SIMULATION_MIN_BYTES, :BOUNDED_SIMULATION_MIN_SEPARATORS
+
       attr_accessor :routes
 
       def initialize(routes)
@@ -109,7 +113,12 @@ module ActionDispatch
         end
 
         def filter_routes(path)
-          simulator.memos(path) { [] }.uniq.select { |route| route.path.match?(path) }
+          if path.bytesize >= BOUNDED_SIMULATION_MIN_BYTES &&
+               (path.valid_encoding? ? path : path.b).count("./?") >= BOUNDED_SIMULATION_MIN_SEPARATORS
+            simulator.bounded_simulator.memos(path) { [] }.uniq.select { |route| route.path.match?(path) }
+          else
+            simulator.memos(path) { [] }
+          end
         end
 
         def match_head_routes(routes, req)
